@@ -1,17 +1,123 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión Académica</title>
+    <title>Sitio Web Institucional Básico con HTML5</title>
 </head>
 <body>
 
-    <h1>Sistema de Gestión Académica</h1>
+```
+<header>
+    <h1>Sitio Web Institucional Básico con HTML5</h1>
+</header>
 
-    <h2>Plataforma diseñada para organizar información estudiantil, materias y actividades universitarias.</h2>
+<nav>
+    <a href="#inicio">Inicio</a> |
+    <a href="#quienes-somos">Quiénes Somos</a> |
+    <a href="#servicios">Servicios</a> |
+    <a href="#contacto">Contacto</a>
+</nav>
 
-    <h3>Desarrollado por Jhoer Fernandez</h3>
+<main>
+
+    <section id="inicio">
+        <h2>Inicio</h2>
+        <p>
+            Bienvenido a mi sitio web, desarrollado como parte de las actividades prácticas de la asignatura
+    Desarrollo de Aplicaciones Web, de la carrera Ingeniería en Tecnologías de la Información. Este proyecto tiene como finalidad poner en práctica los conocimientos
+    básicos adquiridos sobre HTML5, mediante la creación de una página web organizada y funcional. A lo
+    largo de esta práctica se utilizaron diferentes elementos y etiquetas semánticas que permiten estructurar
+    correctamente la información, así como incorporar imágenes, enlaces y contenido multimedia para mejorar
+    la experiencia del usuario.
+        </p>
+    </section>
+
+    <section id="quienes-somos">
+        <h2>Quiénes Somos</h2>
+
+        <article>
+            <p>
+                Este proyecto fue elaborado con fines académicos para reforzar los conocimientos
+                adquiridos en la asignatura Desarrollo de Aplicaciones Web. Durante su desarrollo
+                se aplicaron conceptos fundamentales relacionados con la estructura de una página
+                web, el uso de etiquetas semánticas y la organización adecuada de la información.
+
+                La página integra diferentes elementos como menús de navegación, imágenes,
+                contenido multimedia y secciones informativas que permiten comprender de manera
+                práctica cómo se construye un sitio web básico utilizando HTML5. Además, esta
+                actividad contribuye al fortalecimiento de habilidades relacionadas con el diseño
+                y desarrollo de páginas web, permitiendo familiarizarse con herramientas y
+                metodologías utilizadas en proyectos reales dentro del ámbito tecnológico.
+            </p>
+
+            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800"
+                 alt="Desarrollo web"
+                 width="500">
+        </article>
+    </section>
+
+    <section id="servicios">
+        <h2>Temas Aplicados en la Práctica</h2>
+
+        <ul>
+            <li>Uso de etiquetas semánticas de HTML5.</li>
+            <li>Organización y estructuración del contenido web.</li>
+            <li>Inserción de imágenes dentro de una página web.</li>
+            <li>Integración de videos mediante iframe.</li>
+            <li>Creación de enlaces internos y externos.</li>
+        </ul>
+    </section>
+
+    <section id="contacto">
+        <h2>Contacto</h2>
+
+        <p><strong>Correo:</strong> jf.fernandezm@uea.edu.ec</p>
+        <p><strong>Teléfono:</strong> 0983992635</p>
+        <p><strong>Dirección:</strong> Puyo - Pastaza</p>
+
+        <p>
+            <a href="https://www.facebook.com/" target="_blank">Facebook</a> |
+            <a href="https://www.instagram.com/" target="_blank">Instagram</a> |
+            <a href="https://wa.me/593983992635" target="_blank">WhatsApp</a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Video Relacionado</h2>
+
+        <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/lZeH53-EdjA"
+            title="Introducción a HTML5"
+            frameborder="0"
+            allowfullscreen>
+        </iframe>
+    </section>
+
+    <aside>
+        <h2>Información Adicional</h2>
+
+        <p>
+            Horario referencial de atención: lunes a viernes de 08:00 a 17:00.
+        </p>
+
+        <p>
+            Este sitio fue desarrollado como una práctica académica para aplicar conceptos
+            básicos de HTML5 y comprender la estructura de una página web moderna.
+        </p>
+    </aside>
+
+</main>
+
+<footer>
+    <p>
+        Jhoer Fernandez | Desarrollo de Aplicaciones Web | 2026
+    </p>
+</footer>
+
 
 </body>
 </html>
