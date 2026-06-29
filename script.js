@@ -1,59 +1,153 @@
 const formulario = document.getElementById("formRegistro");
+
+const nombreCampo = document.getElementById("nombreRegistro");
+const descripcionCampo = document.getElementById("descripcionRegistro");
+const categoriaCampo = document.getElementById("categoriaRegistro");
+
+const errorNombre = document.getElementById("errorNombre");
+const errorDescripcion = document.getElementById("errorDescripcion");
+const errorCategoria = document.getElementById("errorCategoria");
+
 const lista = document.getElementById("listaRegistros");
 const contador = document.getElementById("contador");
 const mensaje = document.getElementById("mensaje");
 
 let total = 0;
 
+function validarNombre() {
+
+const nombre = nombreCampo.value.trim();
+
+if (nombre === "") {
+    errorNombre.textContent = "El nombre es obligatorio.";
+    nombreCampo.classList.add("is-invalid");
+    nombreCampo.classList.remove("is-valid");
+    return false;
+}
+
+if (nombre.length < 3) {
+    errorNombre.textContent = "Debe tener mínimo 3 caracteres.";
+    nombreCampo.classList.add("is-invalid");
+    nombreCampo.classList.remove("is-valid");
+    return false;
+}
+
+errorNombre.textContent = "";
+nombreCampo.classList.remove("is-invalid");
+nombreCampo.classList.add("is-valid");
+
+return true;
+
+}
+
+function validarDescripcion() {
+
+const descripcion = descripcionCampo.value.trim();
+
+if (descripcion.length < 10) {
+    errorDescripcion.textContent =
+    "La descripción debe tener al menos 10 caracteres.";
+
+    descripcionCampo.classList.add("is-invalid");
+    descripcionCampo.classList.remove("is-valid");
+
+    return false;
+}
+
+errorDescripcion.textContent = "";
+
+descripcionCampo.classList.remove("is-invalid");
+descripcionCampo.classList.add("is-valid");
+
+return true;
+
+}
+
+function validarCategoria() {
+
+if (categoriaCampo.value === "") {
+
+    errorCategoria.textContent =
+    "Seleccione una categoría.";
+
+    categoriaCampo.classList.add("is-invalid");
+    categoriaCampo.classList.remove("is-valid");
+
+    return false;
+}
+
+errorCategoria.textContent = "";
+
+categoriaCampo.classList.remove("is-invalid");
+categoriaCampo.classList.add("is-valid");
+
+return true;
+
+}
+
+nombreCampo.addEventListener("blur", validarNombre);
+nombreCampo.addEventListener("input", validarNombre);
+
+descripcionCampo.addEventListener("blur", validarDescripcion);
+descripcionCampo.addEventListener("input", validarDescripcion);
+
+categoriaCampo.addEventListener("change", validarCategoria);
+
 formulario.addEventListener("submit", function(event) {
 
-    event.preventDefault();
+event.preventDefault();
 
-    const nombre = document.getElementById("nombreRegistro").value.trim();
-    const descripcion = document.getElementById("descripcionRegistro").value.trim();
-    const categoria = document.getElementById("categoriaRegistro").value;
+const nombreValido = validarNombre();
+const descripcionValida = validarDescripcion();
+const categoriaValida = validarCategoria();
 
-    if (nombre === "" || descripcion === "" || categoria === "") {
-
-        mensaje.innerHTML =
-        '<div class="alert alert-danger">Todos los campos son obligatorios.</div>';
-
-        return;
-    }
+if (!nombreValido || !descripcionValida || !categoriaValida) {
 
     mensaje.innerHTML =
-    '<div class="alert alert-success">Registro agregado correctamente.</div>';
+    '<div class="alert alert-danger">Corrija los errores del formulario.</div>';
 
-    const columna = document.createElement("div");
-    columna.className = "col-md-4 mb-3";
+    return;
+}
 
-    const tarjeta = document.createElement("div");
-    tarjeta.className = "card h-100";
+mensaje.innerHTML =
+'<div class="alert alert-success">Registro agregado correctamente.</div>';
 
-    tarjeta.innerHTML =
-    '<div class="card-body">' +
-    '<h5 class="card-title">' + nombre + '</h5>' +
-    '<p class="card-text">' + descripcion + '</p>' +
-    '<p><strong>Categoría:</strong> ' + categoria + '</p>' +
-    '<button class="btn btn-danger btnEliminar">Eliminar</button>' +
-    '</div>';
+const columna = document.createElement("div");
+columna.className = "col-md-4 mb-3";
 
-    columna.appendChild(tarjeta);
-    lista.appendChild(columna);
+const tarjeta = document.createElement("div");
+tarjeta.className = "card h-100";
 
-    total++;
+tarjeta.innerHTML =
+'<div class="card-body">' +
+'<h5 class="card-title">' + nombreCampo.value + '</h5>' +
+'<p class="card-text">' + descripcionCampo.value + '</p>' +
+'<p><strong>Categoría:</strong> ' + categoriaCampo.value + '</p>' +
+'<button class="btn btn-danger btnEliminar">Eliminar</button>' +
+'</div>';
+
+columna.appendChild(tarjeta);
+
+lista.appendChild(columna);
+
+total++;
+
+contador.textContent = total;
+
+tarjeta.querySelector(".btnEliminar").addEventListener("click", function() {
+
+    columna.remove();
+
+    total--;
+
     contador.textContent = total;
 
-    tarjeta.querySelector(".btnEliminar").addEventListener("click", function() {
+});
 
-        columna.remove();
+formulario.reset();
 
-        total--;
-
-        contador.textContent = total;
-
-    });
-
-    formulario.reset();
+nombreCampo.classList.remove("is-valid");
+descripcionCampo.classList.remove("is-valid");
+categoriaCampo.classList.remove("is-valid");
 
 });
