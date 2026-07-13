@@ -91,6 +91,18 @@ border-radius: 10px;
 box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+.modal-content{
+border-radius: 10px;
+}
+
+#btnAgregar{
+min-width: 170px;
+}
+
+.badge.bg-success{
+background-color: #fd7e14 !important;
+}
+
 @media(max-width:768px){
 
 ```

@@ -8,8 +8,18 @@ const errorCategoria = document.getElementById("errorCategoria");
 const lista = document.getElementById("listaRegistros");
 const contador = document.getElementById("contador");
 const mensaje = document.getElementById("mensaje");
+const btnAgregar = document.getElementById("btnAgregar");
+const spinnerAgregar = document.getElementById("spinnerAgregar");
+const textoBoton = document.getElementById("textoBoton");
+
+// Elementos del modal de confirmación (Bootstrap)
+const modalConfirmarEl = document.getElementById("modalConfirmar");
+const modalConfirmar = new bootstrap.Modal(modalConfirmarEl);
+const nombreAEliminar = document.getElementById("nombreAEliminar");
+const btnConfirmarEliminar = document.getElementById("btnConfirmarEliminar");
 
 let registros = [];
+let indiceAEliminar = null;
 
 function validarNombre() {
   const n = nombreCampo.value.trim();
@@ -71,24 +81,39 @@ function mostrarRegistros() {
 
   registros.forEach((r, i) => {
     const c = document.createElement("div");
-    c.className = "col-md-4 mb-3";
+    c.className = "col-md-6 col-lg-4 mb-3";
     c.innerHTML = `
       <div class="card h-100">
-        <div class="card-body">
+        <div class="card-body d-flex flex-column">
           <h5 class="card-title">${r.nombre}</h5>
-          <p>${r.descripcion}</p>
-          <p><strong>Categoría:</strong> ${r.categoria}</p>
-          <button class="btn btn-danger">Eliminar</button>
+          <span class="badge bg-success mb-2 align-self-start">${r.categoria}</span>
+          <p class="card-text flex-grow-1">${r.descripcion}</p>
+          <button class="btn btn-danger btn-sm mt-2 btnEliminar">Eliminar</button>
         </div>
       </div>
     `;
-    c.querySelector("button").onclick = () => {
-      registros.splice(i, 1);
-      mostrarRegistros();
+    c.querySelector(".btnEliminar").onclick = () => {
+      // En lugar de eliminar directamente, se abre el modal de confirmación
+      indiceAEliminar = i;
+      nombreAEliminar.textContent = r.nombre;
+      modalConfirmar.show();
     };
     lista.appendChild(c);
   });
 }
+
+// Confirmación real de la eliminación dentro del modal
+btnConfirmarEliminar.addEventListener("click", () => {
+  if (indiceAEliminar !== null) {
+    registros.splice(indiceAEliminar, 1);
+    indiceAEliminar = null;
+    mostrarRegistros();
+    mensaje.innerHTML = '<div class="alert alert-warning alert-dismissible fade show" role="alert">' +
+      'Registro eliminado correctamente.' +
+      '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>';
+  }
+  modalConfirmar.hide();
+});
 
 mostrarRegistros();
 
@@ -96,20 +121,36 @@ formulario.addEventListener("submit", e => {
   e.preventDefault();
 
   if (!(validarNombre() && validarDescripcion() && validarCategoria())) {
-    mensaje.innerHTML = '<div class="alert alert-danger">Corrija los errores del formulario.</div>';
+    mensaje.innerHTML = '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+      'Corrija los errores del formulario.' +
+      '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>';
     return;
   }
 
-  registros.push({
-    nombre: nombreCampo.value.trim(),
-    descripcion: descripcionCampo.value.trim(),
-    categoria: categoriaCampo.value
-  });
+  // Simulación de proceso/carga usando un spinner de Bootstrap
+  btnAgregar.disabled = true;
+  spinnerAgregar.classList.remove("d-none");
+  textoBoton.textContent = "Guardando...";
 
-  mensaje.innerHTML = '<div class="alert alert-success">Registro agregado correctamente.</div>';
-  formulario.reset();
-  nombreCampo.classList.remove("is-valid");
-  descripcionCampo.classList.remove("is-valid");
-  categoriaCampo.classList.remove("is-valid");
-  mostrarRegistros();
+  setTimeout(() => {
+    registros.push({
+      nombre: nombreCampo.value.trim(),
+      descripcion: descripcionCampo.value.trim(),
+      categoria: categoriaCampo.value
+    });
+
+    mensaje.innerHTML = '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+      'Registro agregado correctamente.' +
+      '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>';
+
+    formulario.reset();
+    nombreCampo.classList.remove("is-valid");
+    descripcionCampo.classList.remove("is-valid");
+    categoriaCampo.classList.remove("is-valid");
+    mostrarRegistros();
+
+    spinnerAgregar.classList.add("d-none");
+    textoBoton.textContent = "Agregar Registro";
+    btnAgregar.disabled = false;
+  }, 700);
 });
