@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}
+Clientes
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+
+    <div class="text-center mb-5">
+
+        <h2>Clientes</h2>
+
+        <p class="lead">
+            Información de ejemplo sobre los clientes relacionados
+            con el proyecto web.
+        </p>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        {% for cliente in clientes %}
+
+        <div class="col-md-4">
+
+            <div class="card h-100 shadow-sm">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        {{ cliente.nombre }}
+                    </h5>
+
+                    <p class="card-text">
+                        {{ cliente.descripcion }}
+                    </p>
+
+                    {% if cliente.estado == "Activo" %}
+
+                    <span class="badge bg-success">
+                        {{ cliente.estado }}
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-warning text-dark">
+                        {{ cliente.estado }}
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

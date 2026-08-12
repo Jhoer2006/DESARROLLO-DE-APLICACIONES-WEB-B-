@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}
+Productos
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+
+    <div class="text-center mb-5">
+
+        <h2>Productos</h2>
+
+        <p class="lead">
+            Productos relacionados con el desarrollo de aplicaciones web
+            y las tecnologías utilizadas en el proyecto.
+        </p>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        {% for producto in productos %}
+
+        <div class="col-md-4">
+
+            <div class="card h-100 shadow-sm">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        {{ producto.nombre }}
+                    </h5>
+
+                    <p class="card-text">
+                        {{ producto.descripcion }}
+                    </p>
+
+                    <span class="badge bg-success">
+                        {{ producto.categoria }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

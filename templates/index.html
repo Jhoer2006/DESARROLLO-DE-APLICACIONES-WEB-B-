@@ -1,76 +1,10 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html lang="es">
+{% block title %}
+Sitio Web Institucional Básico con HTML5
+{% endblock %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-<title>Sitio Web Institucional Básico con HTML5</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<link rel="stylesheet" href="style.css">
-
-
-</head>
-
-<body>
-
-<!-- FUTURO: encabezado.html -->
-<header>
-    <h1>Sitio Web Institucional Básico con HTML5</h1>
-    <p>Proyecto académico desarrollado para la asignatura Desarrollo de Aplicaciones Web</p>
-</header>
-
-<!-- FUTURO: navbar.html -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top">
-    <div class="container">
-        <a class="navbar-brand" href="#">Proyecto Web</a>
-
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-        data-bs-target="#menu">
-
-        <span class="navbar-toggler-icon"></span>
-
-    </button>
-
-    <div class="collapse navbar-collapse" id="menu">
-
-        <ul class="navbar-nav ms-auto">
-
-            <li class="nav-item">
-                <a class="nav-link" href="#inicio">Inicio</a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="#quienes-somos">Quiénes Somos</a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="#servicios">Temas Aplicados</a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="#registro">Registro</a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="#contacto">Contacto</a>
-            </li>
-
-        </ul>
-
-    </div>
-</div>
-
-
-</nav>
-
-<!-- FUTURO: base.html (contenido principal) -->
-<main class="container">
+{% block content %}
 
 <section id="inicio">
 
@@ -97,7 +31,7 @@
 
     <div class="col-md-6">
 
-        <img src="img/desarrollo-web.jpg"
+        <img src="{{ url_for('static', filename='img/desarrollo-web.jpg') }}"
             alt="Desarrollo Web"
             class="img-fluid shadow">
 
@@ -382,18 +316,4 @@
     </div>
 </div>
 
-<!-- FUTURO: footer.html -->
-<footer>
-
-
-<p>
-    Fernández Jhoer - Peña Liz | Desarrollo de Aplicaciones Web | 2026
-</p>
-
-
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="script.js"></script>
-</body>
-</html>
+{% endblock %}

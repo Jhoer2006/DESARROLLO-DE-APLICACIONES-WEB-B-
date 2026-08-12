@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}
+Facturación
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+
+    <div class="text-center mb-5">
+
+        <h2>Facturación</h2>
+
+        <p class="lead">
+            Registro de facturas de ejemplo generadas
+            dentro del proyecto web.
+        </p>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover align-middle">
+
+            <thead class="table-success">
+
+                <tr>
+
+                    <th>N.º Factura</th>
+
+                    <th>Cliente</th>
+
+                    <th>Fecha</th>
+
+                    <th>Total</th>
+
+                    <th>Estado</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for factura in facturas %}
+
+                <tr>
+
+                    <td>
+                        {{ factura.numero }}
+                    </td>
+
+                    <td>
+                        {{ factura.cliente }}
+                    </td>
+
+                    <td>
+                        {{ factura.fecha }}
+                    </td>
+
+                    <td>
+                        {{ factura.total }}
+                    </td>
+
+                    <td>
+
+                        {% if factura.estado == "Pagada" %}
+
+                        <span class="badge bg-success">
+                            {{ factura.estado }}
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-warning text-dark">
+                            {{ factura.estado }}
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <div class="alert alert-info mt-4">
+
+        <strong>Información:</strong>
+
+        Los datos mostrados son únicamente de ejemplo.
+        En esta etapa del proyecto no se utiliza una base de datos.
+
+    </div>
+
+</section>
+
+{% endblock %}

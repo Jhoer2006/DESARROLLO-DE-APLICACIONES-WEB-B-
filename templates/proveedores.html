@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}
+Proveedores
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+
+    <div class="text-center mb-5">
+
+        <h2>Proveedores</h2>
+
+        <p class="lead">
+            Información de ejemplo sobre los proveedores
+            relacionados con el proyecto web.
+        </p>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        {% for proveedor in proveedores %}
+
+        <div class="col-md-4">
+
+            <div class="card h-100 shadow-sm">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        {{ proveedor.nombre }}
+                    </h5>
+
+                    <p class="card-text">
+                        {{ proveedor.descripcion }}
+                    </p>
+
+
+                    {% if proveedor.estado == "Disponible" %}
+
+                    <span class="badge bg-success">
+                        {{ proveedor.estado }}
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-warning text-dark">
+                        {{ proveedor.estado }}
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}
