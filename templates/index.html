@@ -1,319 +1,566 @@
 {% extends "base.html" %}
 
 {% block title %}
-Sitio Web Institucional Básico con HTML5
+TecnoWeb - Desarrollo y Soluciones Web
 {% endblock %}
 
 {% block content %}
 
 <section id="inicio">
 
+    <div class="row align-items-center">
 
-<div class="row align-items-center">
+        <div class="col-md-6">
 
-    <div class="col-md-6">
+            <h2>Bienvenido a {{ empresa }}</h2>
 
-        <h2>Inicio</h2>
+            <p>
+                {{ descripcion_empresa }}
+                En TecnoWeb desarrollamos páginas web, tiendas virtuales,
+                aplicaciones web y soluciones digitales adaptadas a las
+                necesidades de nuestros clientes.
+            </p>
 
-        <p>
-            Bienvenido a mi sitio web, desarrollado como parte de las actividades prácticas de la
-            asignatura Desarrollo de Aplicaciones Web de la carrera Ingeniería en Tecnologías de la
-            Información. Este proyecto tiene como finalidad poner en práctica los conocimientos
-            básicos adquiridos sobre HTML5, CSS3 y Bootstrap mediante la creación de una página
-            web organizada, funcional y adaptable a diferentes dispositivos.
-        </p>
+            <p>
+                Nuestro objetivo es ayudar a pequeños negocios y
+                emprendimientos a fortalecer su presencia digital mediante
+                soluciones funcionales, modernas y adaptables a diferentes
+                dispositivos.
+            </p>
 
-        <a href="#contacto" class="btn btn-success">
-            Contáctame
-        </a>
+            <a href="#contacto" class="btn btn-success">
+                Contáctenos
+            </a>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <img
+                src="{{ url_for('static', filename='img/desarrollo-web.jpg') }}"
+                alt="Desarrollo de soluciones web"
+                class="img-fluid shadow">
+
+        </div>
 
     </div>
-
-    <div class="col-md-6">
-
-        <img src="{{ url_for('static', filename='img/desarrollo-web.jpg') }}"
-            alt="Desarrollo Web"
-            class="img-fluid shadow">
-
-    </div>
-
-</div>
-
 
 </section>
+
 
 <section id="quienes-somos">
 
+    <h2 class="mt-5">Quiénes Somos</h2>
 
-<h2 class="mt-5">Quiénes Somos</h2>
+    <article>
 
-<article>
+        <p>
+            {{ empresa }} es una empresa dedicada al desarrollo de soluciones
+            web para negocios y emprendimientos. Nuestro trabajo está
+            orientado a crear sitios y aplicaciones funcionales, organizadas,
+            responsivas y adaptadas a las necesidades de cada cliente.
+        </p>
 
-    <p>
-        Este proyecto fue elaborado con fines académicos para reforzar los conocimientos
-        adquiridos en la asignatura Desarrollo de Aplicaciones Web. Durante su desarrollo
-        se aplicaron conceptos fundamentales relacionados con la estructura de una página
-        web, el uso de etiquetas semánticas y la organización adecuada de la información.
+        <p>
+            Buscamos ofrecer soluciones digitales que permitan a nuestros
+            clientes mejorar su presencia en Internet y aprovechar las
+            herramientas tecnológicas para fortalecer sus actividades.
+        </p>
 
-        La página integra diferentes elementos como menús de navegación, imágenes,
-        contenido multimedia y secciones informativas que permiten comprender de manera
-        práctica cómo se construye un sitio web básico utilizando HTML5. Además, esta
-        actividad contribuye al fortalecimiento de habilidades relacionadas con el diseño
-        y desarrollo de páginas web.
-    </p>
-
-</article>
-
+    </article>
 
 </section>
+
 
 <section id="servicios">
 
+    <h2 class="text-center mt-5 mb-4">
+        Nuestros Servicios
+    </h2>
 
-<h2 class="text-center mt-5 mb-4">
-    Temas Aplicados en la Práctica
-</h2>
+    <div class="row">
 
-<div class="row">
+        <div class="col-md-4 mb-3">
 
-    <div class="col-md-4 mb-3">
+            <div class="card h-100">
 
-        <div class="card h-100">
+                <div class="card-body">
 
-            <div class="card-body">
+                    <h5 class="card-title">
+                        Desarrollo Web
+                    </h5>
 
-                <h5 class="card-title">HTML5</h5>
+                    <p class="card-text">
+                        Creación de páginas web profesionales y adaptables
+                        para empresas, negocios y emprendimientos.
+                    </p>
 
-                <p class="card-text">
-                    Uso de etiquetas semánticas para estructurar correctamente una página web.
-                </p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+
+            <div class="card h-100">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        Tiendas Virtuales
+                    </h5>
+
+                    <p class="card-text">
+                        Desarrollo de soluciones web para presentar productos
+                        y servicios de negocios en Internet.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+
+            <div class="card h-100">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        Aplicaciones Web
+                    </h5>
+
+                    <p class="card-text">
+                        Desarrollo de aplicaciones web adaptadas a los
+                        requerimientos y necesidades de cada cliente.
+                    </p>
+
+                </div>
 
             </div>
 
         </div>
 
     </div>
-
-    <div class="col-md-4 mb-3">
-
-        <div class="card h-100">
-
-            <div class="card-body">
-
-                <h5 class="card-title">CSS3</h5>
-
-                <p class="card-text">
-                    Aplicación de estilos visuales para mejorar la apariencia del sitio web.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-4 mb-3">
-
-        <div class="card h-100">
-
-            <div class="card-body">
-
-                <h5 class="card-title">Bootstrap</h5>
-
-                <p class="card-text">
-                    Uso de componentes responsivos para adaptar el diseño a diferentes dispositivos.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
 
 </section>
+
 
 <section id="contacto">
 
+    <h2 class="mt-5">Contacto</h2>
 
-<h2 class="mt-5">Contacto</h2>
+    <div class="row">
 
-<div class="row">
-    <div class="col-md-6 mb-3">
-        <p><strong>Correo:</strong> jf.fernandezm@uea.edu.ec</p>
-        <p><strong>Teléfono:</strong> 0983992635</p>
-        <p><strong>Dirección:</strong> Puyo - Pastaza</p>
+        <div class="col-md-6 mb-3">
 
-        <p>
-            <a href="https://www.facebook.com/" target="_blank">Facebook</a> |
-            <a href="https://www.instagram.com/" target="_blank">Instagram</a> |
-            <a href="https://wa.me/593983992635" target="_blank">WhatsApp</a>
-        </p>
-    </div>
+            <p>
+                <strong>Empresa:</strong> {{ empresa }}
+            </p>
 
-    <div class="col-md-6">
-        <form>
+            <p>
+                <strong>Correo:</strong>
+                jf.fernandezm@uea.edu.ec
+            </p>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Nombre</label>
-                    <input type="text" class="form-control">
+            <p>
+                <strong>Teléfono:</strong>
+                0983992635
+            </p>
+
+            <p>
+                <strong>Dirección:</strong>
+                Puyo - Pastaza
+            </p>
+
+            <p>
+
+                <a href="https://www.facebook.com/"
+                   target="_blank">
+                    Facebook
+                </a>
+
+                |
+
+                <a href="https://www.instagram.com/"
+                   target="_blank">
+                    Instagram
+                </a>
+
+                |
+
+                <a href="https://wa.me/593983992635"
+                   target="_blank">
+                    WhatsApp
+                </a>
+
+            </p>
+
+        </div>
+
+
+        <div class="col-md-6">
+
+            <form>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Nombre
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control">
+
+                    </div>
+
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Correo Electrónico
+                        </label>
+
+                        <input
+                            type="email"
+                            class="form-control">
+
+                    </div>
+
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Correo Electrónico</label>
-                    <input type="email" class="form-control">
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Asunto
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control">
+
                 </div>
-            </div>
 
-            <div class="mb-3">
-                <label class="form-label">Asunto</label>
-                <input type="text" class="form-control">
-            </div>
 
-            <div class="mb-3">
-                <label class="form-label">Mensaje</label>
-                <textarea class="form-control" rows="4"></textarea>
-            </div>
+                <div class="mb-3">
 
-            <button type="submit" class="btn btn-success">
-                Enviar Mensaje
-            </button>
+                    <label class="form-label">
+                        Mensaje
+                    </label>
 
-        </form>
+                    <textarea
+                        class="form-control"
+                        rows="4"></textarea>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-success">
+
+                    Enviar Mensaje
+
+                </button>
+
+            </form>
+
+        </div>
+
     </div>
-</div>
-
 
 </section>
+
 
 <section>
 
+    <h2 class="mt-5">
+        Conozca más sobre Desarrollo Web
+    </h2>
 
-<h2 class="mt-5">Video Educativo</h2>
+    <div class="row">
 
-<div class="row">
-    <div class="col-12 col-lg-8 mx-auto">
-        <iframe
-            src="https://www.youtube.com/embed/mNbnV3aN3KA?si=Ah7XyYbFl_kyigi9"
-            title="Video de apoyo sobre HTML5"
-            frameborder="0"
-            allowfullscreen>
-        </iframe>
+        <div class="col-12 col-lg-8 mx-auto">
+
+            <iframe
+                src="https://www.youtube.com/embed/mNbnV3aN3KA?si=Ah7XyYbFl_kyigi9"
+                title="Video de apoyo sobre desarrollo web"
+                frameborder="0"
+                allowfullscreen>
+            </iframe>
+
+        </div>
+
     </div>
-</div>
-
 
 </section>
+
+
 <section id="registro" class="mt-5">
 
+    <h2>
+        Solicita una Cotización
+    </h2>
 
-<h2>Registro de Consultas</h2>
+    <div class="row">
 
-<div class="row">
-    <div class="col-lg-7">
+        <div class="col-lg-7">
 
-        <form id="formRegistro">
+            <form id="formRegistro">
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Nombre</label>
-                    <input type="text" id="nombreRegistro" class="form-control">
-                    <div id="errorNombre" class="text-danger mt-1"></div>
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Nombre
+                        </label>
+
+                        <input
+                            type="text"
+                            id="nombreRegistro"
+                            class="form-control">
+
+                        <div
+                            id="errorNombre"
+                            class="text-danger mt-1">
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Servicio de interés
+                        </label>
+
+                        <select
+                            id="categoriaRegistro"
+                            class="form-select">
+
+                            <option value="">
+                                Seleccione
+                            </option>
+
+                            <option>
+                                Página Web
+                            </option>
+
+                            <option>
+                                Tienda Virtual
+                            </option>
+
+                            <option>
+                                Aplicación Web
+                            </option>
+
+                            <option>
+                                Diseño de Interfaces
+                            </option>
+
+                            <option>
+                                Mantenimiento Web
+                            </option>
+
+                        </select>
+
+                        <div
+                            id="errorCategoria"
+                            class="text-danger mt-1">
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Categoría</label>
 
-                    <select id="categoriaRegistro" class="form-select">
+                <div class="mb-3">
 
-                        <option value="">Seleccione</option>
-                        <option>Consulta</option>
-                        <option>Solicitud</option>
-                        <option>Información</option>
+                    <label class="form-label">
+                        Descripción de la necesidad
+                    </label>
 
-                    </select>
+                    <textarea
+                        id="descripcionRegistro"
+                        class="form-control"
+                        rows="3">
+                    </textarea>
 
-                    <div id="errorCategoria" class="text-danger mt-1"></div>
+                    <div
+                        id="errorDescripcion"
+                        class="text-danger mt-1">
+                    </div>
+
                 </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-success"
+                    id="btnAgregar">
+
+                    <span
+                        id="spinnerAgregar"
+                        class="spinner-border spinner-border-sm d-none"
+                        role="status"
+                        aria-hidden="true">
+                    </span>
+
+                    <span id="textoBoton">
+                        Registrar Solicitud
+                    </span>
+
+                </button>
+
+            </form>
+
+
+            <div
+                id="mensaje"
+                class="mt-3">
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Descripción</label>
-                <textarea id="descripcionRegistro" class="form-control" rows="3"></textarea>
-                <div id="errorDescripcion" class="text-danger mt-1"></div>
-            </div>
-
-            <button type="submit" class="btn btn-success" id="btnAgregar">
-                <span id="spinnerAgregar" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                <span id="textoBoton">Agregar Registro</span>
-            </button>
-
-        </form>
-
-        <div id="mensaje" class="mt-3"></div>
-
-    </div>
-
-    <div class="col-lg-5">
-        <div class="alert alert-info mt-3 mt-lg-0" role="alert">
-            Complete el formulario y presione <strong>Agregar Registro</strong> para
-            guardar una nueva consulta. Puede eliminar cualquier registro desde su tarjeta,
-            previa confirmación.
         </div>
+
+
+        <div class="col-lg-5">
+
+            <div
+                class="alert alert-info mt-3 mt-lg-0"
+                role="alert">
+
+                Complete el formulario y seleccione el servicio
+                que le interesa. Indique brevemente las necesidades
+                de su proyecto para que podamos conocer mejor
+                su solicitud.
+
+            </div>
+
+        </div>
+
     </div>
-</div>
 
-<h4 class="mt-4">
-    Total de registros:
-    <span id="contador" class="badge bg-success">0</span>
-</h4>
 
-<div id="listaRegistros" class="row mt-3"></div>
+    <h4 class="mt-4">
 
+        Total de solicitudes:
+
+        <span
+            id="contador"
+            class="badge bg-success">
+            0
+        </span>
+
+    </h4>
+
+
+    <div
+        id="listaRegistros"
+        class="row mt-3">
+    </div>
 
 </section>
 
 
 <aside>
 
+    <h2>
+        Información Adicional
+    </h2>
 
-<h2>Información Adicional</h2>
+    <p>
+        Horario referencial de atención:
+        lunes a viernes de 08:00 a 17:00.
+    </p>
 
-<p>
-    Horario referencial de atención: lunes a viernes de 08:00 a 17:00.
-</p>
-
-<p>
-    Este sitio fue desarrollado como una práctica académica para aplicar conceptos
-    básicos de HTML5, CSS3 y Bootstrap.
-</p>
-
+    <p>
+        En {{ empresa }} trabajamos en el desarrollo de
+        soluciones web orientadas a las necesidades de
+        nuestros clientes.
+    </p>
 
 </aside>
 
-</main>
 
 <!-- Modal de confirmación de eliminación -->
-<div class="modal fade" id="modalConfirmar" tabindex="-1" aria-labelledby="modalConfirmarLabel" aria-hidden="true">
+
+<div
+    class="modal fade"
+    id="modalConfirmar"
+    tabindex="-1"
+    aria-labelledby="modalConfirmarLabel"
+    aria-hidden="true">
+
     <div class="modal-dialog">
+
         <div class="modal-content">
+
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="modalConfirmarLabel">Confirmar eliminación</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+
+                <h5
+                    class="modal-title"
+                    id="modalConfirmarLabel">
+
+                    Confirmar eliminación
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                    aria-label="Cerrar">
+                </button>
+
             </div>
+
+
             <div class="modal-body">
-                ¿Está seguro que desea eliminar el registro de <strong id="nombreAEliminar"></strong>?
+
+                ¿Está seguro que desea eliminar el registro de
+                <strong id="nombreAEliminar"></strong>?
+
                 Esta acción no se puede deshacer.
+
             </div>
+
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Eliminar</button>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    id="btnConfirmarEliminar">
+
+                    Eliminar
+
+                </button>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
 
 {% endblock %}

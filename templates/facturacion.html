@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 
 {% block title %}
-Facturación
+Facturación - TecnoWeb
 {% endblock %}
 
 {% block content %}
 
-<section class="py-5">
+<section class="mt-4">
 
-    <div class="text-center mb-5">
+    <div class="text-center mb-4">
 
         <h2>Facturación</h2>
 
-        <p class="lead">
-            Registro de facturas de ejemplo generadas
-            dentro del proyecto web.
+        <p>
+            Registro de facturas correspondientes a los servicios
+            proporcionados por TecnoWeb.
         </p>
 
     </div>
@@ -24,24 +24,20 @@ Facturación
 
         <table class="table table-bordered table-hover align-middle">
 
-            <thead class="table-success">
+            <thead class="table-dark">
 
                 <tr>
 
-                    <th>N.º Factura</th>
-
+                    <th>Número</th>
                     <th>Cliente</th>
-
+                    <th>Servicio</th>
                     <th>Fecha</th>
-
                     <th>Total</th>
-
                     <th>Estado</th>
 
                 </tr>
 
             </thead>
-
 
             <tbody>
 
@@ -58,26 +54,32 @@ Facturación
                     </td>
 
                     <td>
+                        {{ factura.servicio }}
+                    </td>
+
+                    <td>
                         {{ factura.fecha }}
                     </td>
 
                     <td>
-                        {{ factura.total }}
+                        <strong>
+                            {{ factura.total }}
+                        </strong>
                     </td>
 
                     <td>
 
                         {% if factura.estado == "Pagada" %}
 
-                        <span class="badge bg-success">
-                            {{ factura.estado }}
-                        </span>
+                            <span class="badge bg-success">
+                                Pagada
+                            </span>
 
                         {% else %}
 
-                        <span class="badge bg-warning text-dark">
-                            {{ factura.estado }}
-                        </span>
+                            <span class="badge bg-warning text-dark">
+                                Pendiente
+                            </span>
 
                         {% endif %}
 
@@ -94,12 +96,13 @@ Facturación
     </div>
 
 
-    <div class="alert alert-info mt-4">
+    <div class="alert alert-info mt-4" role="alert">
 
         <strong>Información:</strong>
 
-        Los datos mostrados son únicamente de ejemplo.
-        En esta etapa del proyecto no se utiliza una base de datos.
+        Las facturas mostradas corresponden a datos de ejemplo
+        utilizados para representar el funcionamiento del sistema
+        de facturación de TecnoWeb.
 
     </div>
 

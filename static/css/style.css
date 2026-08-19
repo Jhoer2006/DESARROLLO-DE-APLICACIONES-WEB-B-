@@ -105,7 +105,6 @@ background-color: #fd7e14 !important;
 
 @media(max-width:768px){
 
-```
 header h1{
     font-size: 1.8rem;
 }
@@ -113,6 +112,21 @@ header h1{
 iframe{
     min-height: 250px;
 }
-```
 
+}
+
+/* Estados de productos */
+.badge.bg-success {
+    background-color: #198754 !important;
+    color: #ffffff !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
 }

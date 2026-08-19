@@ -1,164 +1,70 @@
 <!DOCTYPE html>
-
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
         {% block title %}
-        Sitio Web Institucional Básico con HTML5
+        TecnoWeb
         {% endblock %}
     </title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet">
 
-    <link rel="stylesheet"
+    <!-- CSS propio -->
+    <link
+        rel="stylesheet"
         href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
 <body>
 
-<!-- ENCABEZADO -->
-<header>
-    <h1>Sitio Web Institucional Básico con HTML5</h1>
+    <!-- ENCABEZADO -->
+    <header>
 
-    <p>
-        Proyecto académico desarrollado para la asignatura
-        Desarrollo de Aplicaciones Web
-    </p>
-</header>
+        <h1>TecnoWeb</h1>
 
+        <p>
+            Desarrollo y Soluciones Web
+        </p>
 
-<!-- BARRA DE NAVEGACIÓN -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top">
-
-    <div class="container">
-
-        <a class="navbar-brand"
-            href="{{ url_for('inicio') }}">
-            Proyecto Web
-        </a>
-
-        <button class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#menu">
-
-            <span class="navbar-toggler-icon"></span>
-
-        </button>
-
-        <div class="collapse navbar-collapse" id="menu">
-
-            <ul class="navbar-nav ms-auto">
-
-    <li class="nav-item">
-        <a class="nav-link"
-           href="{{ url_for('inicio') }}#inicio">
-            Inicio
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link"
-           href="{{ url_for('inicio') }}#quienes-somos">
-            Quiénes Somos
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link"
-           href="{{ url_for('inicio') }}#servicios">
-            Temas Aplicados
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link"
-           href="{{ url_for('productos') }}">
-            Productos
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link"
-           href="{{ url_for('clientes') }}">
-            Clientes
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link"
-           href="{{ url_for('proveedores') }}">
-            Proveedores
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link"
-           href="{{ url_for('facturacion') }}">
-            Facturación
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link"
-           href="{{ url_for('inicio') }}#registro">
-            Registro
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link"
-           href="{{ url_for('inicio') }}#contacto">
-            Contacto
-        </a>
-    </li>
-
-</ul>
-
-        </div>
-
-    </div>
-
-</nav>
+    </header>
 
 
-<!-- CONTENIDO DE CADA PÁGINA -->
-<main class="container">
-
-    {% block content %}
-    {% endblock %}
-
-</main>
+    <!-- COMPONENTE REUTILIZABLE: NAVBAR -->
+    {% include "components/navbar.html" %}
 
 
-<!-- PIE DE PÁGINA -->
-<footer>
+    <!-- CONTENIDO DE CADA PÁGINA -->
+    <main class="container">
 
-    <p>
-        Fernández Jhoer - Peña Liz |
-        Desarrollo de Aplicaciones Web |
-        2026
-    </p>
+        {% block content %}
+        {% endblock %}
 
-</footer>
+    </main>
 
 
-<!-- Bootstrap JavaScript -->
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
+    <!-- COMPONENTE REUTILIZABLE: FOOTER -->
+    {% include "components/footer.html" %}
 
-<!-- JavaScript propio -->
-<script
-    src="{{ url_for('static', filename='js/script.js') }}">
-</script>
+
+    <!-- Bootstrap JavaScript -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+    <!-- JavaScript propio -->
+    <script
+        src="{{ url_for('static', filename='js/script.js') }}">
+    </script>
 
 </body>
 
