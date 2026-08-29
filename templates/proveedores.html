@@ -20,6 +20,8 @@ Proveedores - TecnoWeb
     </div>
 
 
+    <!-- LISTA DE PROVEEDORES -->
+
     <div class="row">
 
         {% for proveedor in proveedores %}
@@ -82,6 +84,121 @@ Proveedores - TecnoWeb
         {% endfor %}
 
     </div>
+
+
+    <!-- FORMULARIO WTForms -->
+
+    <section class="mt-5">
+
+        <div class="row">
+
+            <div class="col-lg-8 mx-auto">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h3 class="mb-4">
+                            Registrar Proveedor
+                        </h3>
+
+
+                        <form method="POST">
+
+                            {{ form.hidden_tag() }}
+
+
+                            <!-- NOMBRE -->
+
+                            <div class="mb-3">
+
+                                {{ form.nombre.label(class="form-label") }}
+
+                                {{ form.nombre(
+                                    class="form-control",
+                                    placeholder="Ingrese el nombre del proveedor"
+                                ) }}
+
+
+                                {% for error in form.nombre.errors %}
+
+                                <div class="text-danger mt-1">
+                                    {{ error }}
+                                </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- DESCRIPCIÓN -->
+
+                            <div class="mb-3">
+
+                                {{ form.descripcion.label(class="form-label") }}
+
+                                {{ form.descripcion(
+                                    class="form-control",
+                                    rows="4",
+                                    placeholder="Ingrese una descripción del proveedor"
+                                ) }}
+
+
+                                {% for error in form.descripcion.errors %}
+
+                                <div class="text-danger mt-1">
+                                    {{ error }}
+                                </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- ESTADO -->
+
+                            <div class="mb-3">
+
+                                {{ form.estado.label(class="form-label") }}
+
+                                {{ form.estado(
+                                    class="form-select"
+                                ) }}
+
+
+                                {% for error in form.estado.errors %}
+
+                                <div class="text-danger mt-1">
+                                    {{ error }}
+                                </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- BOTÓN -->
+
+                            <div>
+
+                                {{ form.submit(
+                                    class="btn btn-success"
+                                ) }}
+
+                            </div>
+
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
 
 </section>
 

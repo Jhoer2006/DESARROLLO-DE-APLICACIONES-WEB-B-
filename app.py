@@ -1,6 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
+from forms import ProductoForm, ClienteForm, ProveedorForm, FacturacionForm
 
 app = Flask(__name__)
+
+app.config["SECRET_KEY"] = "tecnoweb-clave-secreta"
 
 
 # ============================================================
@@ -27,7 +30,7 @@ def inicio():
 # PRODUCTOS / SERVICIOS
 # ============================================================
 
-@app.route("/productos")
+@app.route("/productos", methods=["GET", "POST"])
 def productos():
 
     productos = [
@@ -73,9 +76,26 @@ def productos():
         }
     ]
 
+    form = ProductoForm()
+
+    if form.validate_on_submit():
+
+        nuevo_producto = {
+            "nombre": form.nombre.data,
+            "descripcion": form.descripcion.data,
+            "categoria": form.categoria.data,
+            "precio": "$0.00",
+            "estado": "Disponible"
+        }
+
+        productos.append(nuevo_producto)
+
+        return redirect(url_for("productos"))
+
     return render_template(
         "productos.html",
-        productos=productos
+        productos=productos,
+        form=form
     )
 
 
@@ -83,7 +103,7 @@ def productos():
 # CLIENTES
 # ============================================================
 
-@app.route("/clientes")
+@app.route("/clientes", methods=["GET", "POST"])
 def clientes():
 
     clientes = [
@@ -116,9 +136,25 @@ def clientes():
         }
     ]
 
+    form = ClienteForm()
+
+    if form.validate_on_submit():
+
+        nuevo_cliente = {
+            "nombre": form.nombre.data,
+            "descripcion": form.descripcion.data,
+            "servicio": "Página Web Empresarial",
+            "estado": form.estado.data
+        }
+
+        clientes.append(nuevo_cliente)
+
+        return redirect(url_for("clientes"))
+
     return render_template(
         "clientes.html",
-        clientes=clientes
+        clientes=clientes,
+        form=form
     )
 
 
@@ -126,7 +162,7 @@ def clientes():
 # PROVEEDORES
 # ============================================================
 
-@app.route("/proveedores")
+@app.route("/proveedores", methods=["GET", "POST"])
 def proveedores():
 
     proveedores = [
@@ -159,9 +195,25 @@ def proveedores():
         }
     ]
 
+    form = ProveedorForm()
+
+    if form.validate_on_submit():
+
+        nuevo_proveedor = {
+            "nombre": form.nombre.data,
+            "descripcion": form.descripcion.data,
+            "tipo": "Hosting",
+            "estado": form.estado.data
+        }
+
+        proveedores.append(nuevo_proveedor)
+
+        return redirect(url_for("proveedores"))
+
     return render_template(
         "proveedores.html",
-        proveedores=proveedores
+        proveedores=proveedores,
+        form=form
     )
 
 
@@ -169,7 +221,7 @@ def proveedores():
 # FACTURACIÓN
 # ============================================================
 
-@app.route("/facturacion")
+@app.route("/facturacion", methods=["GET", "POST"])
 def facturacion():
 
     facturas = [
@@ -199,9 +251,27 @@ def facturacion():
         }
     ]
 
+    form = FacturacionForm()
+
+    if form.validate_on_submit():
+
+        nueva_factura = {
+            "numero": form.numero.data,
+            "cliente": form.cliente.data,
+            "servicio": form.servicio.data,
+            "fecha": form.fecha.data.strftime("%d/%m/%Y"),
+            "total": f"${form.total.data:.2f}",
+            "estado": form.estado.data
+        }
+
+        facturas.append(nueva_factura)
+
+        return redirect(url_for("facturacion"))
+
     return render_template(
         "facturacion.html",
-        facturas=facturas
+        facturas=facturas,
+        form=form
     )
 
 

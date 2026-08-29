@@ -20,6 +20,8 @@ Facturación - TecnoWeb
     </div>
 
 
+    <!-- TABLA DE FACTURAS -->
+
     <div class="table-responsive">
 
         <table class="table table-bordered table-hover align-middle">
@@ -96,6 +98,8 @@ Facturación - TecnoWeb
     </div>
 
 
+    <!-- INFORMACIÓN -->
+
     <div class="alert alert-info mt-4" role="alert">
 
         <strong>Información:</strong>
@@ -105,6 +109,182 @@ Facturación - TecnoWeb
         de facturación de TecnoWeb.
 
     </div>
+
+
+    <!-- FORMULARIO WTForms -->
+
+    <section class="mt-5">
+
+        <div class="row">
+
+            <div class="col-lg-8 mx-auto">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h3 class="mb-4">
+                            Registrar Factura
+                        </h3>
+
+
+                        <form method="POST">
+
+                            {{ form.hidden_tag() }}
+
+
+                            <!-- NÚMERO -->
+
+                            <div class="mb-3">
+
+                                {{ form.numero.label(class="form-label") }}
+
+                                {{ form.numero(
+                                    class="form-control",
+                                    placeholder="Ingrese el número de factura"
+                                ) }}
+
+                                {% for error in form.numero.errors %}
+
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- CLIENTE -->
+
+                            <div class="mb-3">
+
+                                {{ form.cliente.label(class="form-label") }}
+
+                                {{ form.cliente(
+                                    class="form-control",
+                                    placeholder="Ingrese el nombre del cliente"
+                                ) }}
+
+                                {% for error in form.cliente.errors %}
+
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- SERVICIO -->
+
+                            <div class="mb-3">
+
+                                {{ form.servicio.label(class="form-label") }}
+
+                                {{ form.servicio(
+                                    class="form-control",
+                                    placeholder="Ingrese el servicio"
+                                ) }}
+
+                                {% for error in form.servicio.errors %}
+
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- FECHA -->
+
+                            <div class="mb-3">
+
+                                {{ form.fecha.label(class="form-label") }}
+
+                                {{ form.fecha(
+                                    class="form-control"
+                                ) }}
+
+                                {% for error in form.fecha.errors %}
+
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- TOTAL -->
+
+                            <div class="mb-3">
+
+                                {{ form.total.label(class="form-label") }}
+
+                                {{ form.total(
+                                    class="form-control",
+                                    placeholder="Ingrese el total"
+                                ) }}
+
+                                {% for error in form.total.errors %}
+
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- ESTADO -->
+
+                            <div class="mb-3">
+
+                                {{ form.estado.label(class="form-label") }}
+
+                                {{ form.estado(
+                                    class="form-select"
+                                ) }}
+
+                                {% for error in form.estado.errors %}
+
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- BOTÓN -->
+
+                            <div>
+
+                                {{ form.submit(
+                                    class="btn btn-success"
+                                ) }}
+
+                            </div>
+
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
 
 </section>
 
