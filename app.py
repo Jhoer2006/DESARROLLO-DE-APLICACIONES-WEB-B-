@@ -1,9 +1,89 @@
 from flask import Flask, render_template, request, redirect, url_for
 from forms import ProductoForm, ClienteForm, ProveedorForm, FacturacionForm
+import sqlite3
 
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = "tecnoweb-clave-secreta"
+
+
+def conectar_bd():
+    conexion = sqlite3.connect("data/ferreteria.db")
+    conexion.row_factory = sqlite3.Row
+    return conexion
+
+
+def crear_tabla_productos():
+
+    conexion = conectar_bd()
+
+    conexion.execute("""
+        CREATE TABLE IF NOT EXISTS productos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            descripcion TEXT NOT NULL,
+            categoria TEXT NOT NULL
+        )
+    """)
+
+    conexion.commit()
+    conexion.close()
+
+
+def cargar_productos_iniciales():
+
+    productos_iniciales = [
+        (
+            "Página Web Empresarial",
+            "Sitio web profesional y adaptable para empresas y emprendimientos.",
+            "Desarrollo"
+        ),
+        (
+            "Tienda Virtual",
+            "Solución web para presentar productos y servicios de un negocio en línea.",
+            "Comercio Electrónico"
+        ),
+        (
+            "Aplicación Web",
+            "Aplicación desarrollada de acuerdo con las necesidades específicas de cada cliente.",
+            "Aplicaciones"
+        ),
+        (
+            "Diseño de Interfaces",
+            "Diseño de interfaces modernas, organizadas y adaptables a diferentes dispositivos.",
+            "Diseño"
+        )
+    ]
+
+    conexion = conectar_bd()
+
+    for producto in productos_iniciales:
+
+        existe = conexion.execute(
+            """
+            SELECT id
+            FROM productos
+            WHERE nombre = ?
+            """,
+            (producto[0],)
+        ).fetchone()
+
+        if existe is None:
+
+            conexion.execute(
+                """
+                INSERT INTO productos (nombre, descripcion, categoria)
+                VALUES (?, ?, ?)
+                """,
+                producto
+            )
+
+    conexion.commit()
+    conexion.close()
+
+
+crear_tabla_productos()
+cargar_productos_iniciales()
 
 
 # ============================================================
@@ -33,64 +113,44 @@ def inicio():
 @app.route("/productos", methods=["GET", "POST"])
 def productos():
 
-    productos = [
-        {
-            "nombre": "Página Web Empresarial",
-            "descripcion": (
-                "Sitio web profesional y adaptable para empresas "
-                "y emprendimientos."
-            ),
-            "categoria": "Desarrollo Web",
-            "precio": "$150.00",
-            "estado": "Disponible"
-        },
-        {
-            "nombre": "Tienda Virtual",
-            "descripcion": (
-                "Solución web para presentar productos y servicios "
-                "de un negocio en línea."
-            ),
-            "categoria": "Comercio Electrónico",
-            "precio": "$280.00",
-            "estado": "Disponible"
-        },
-        {
-            "nombre": "Aplicación Web",
-            "descripcion": (
-                "Aplicación desarrollada de acuerdo con las "
-                "necesidades específicas de cada cliente."
-            ),
-            "categoria": "Aplicaciones",
-            "precio": "$500.00",
-            "estado": "Disponible"
-        },
-        {
-            "nombre": "Diseño de Interfaces",
-            "descripcion": (
-                "Diseño de interfaces modernas, organizadas y "
-                "adaptables a diferentes dispositivos."
-            ),
-            "categoria": "Diseño",
-            "precio": "$95.00",
-            "estado": "Disponible"
-        }
-    ]
-
     form = ProductoForm()
 
     if form.validate_on_submit():
 
-        nuevo_producto = {
-            "nombre": form.nombre.data,
-            "descripcion": form.descripcion.data,
-            "categoria": form.categoria.data,
-            "precio": "$0.00",
-            "estado": "Disponible"
-        }
+        conexion = conectar_bd()
 
-        productos.append(nuevo_producto)
+        conexion.execute(
+            """
+            INSERT INTO productos (nombre, descripcion, categoria)
+            VALUES (?, ?, ?)
+            """,
+            (
+                form.nombre.data,
+                form.descripcion.data,
+                form.categoria.data
+            )
+        )
+
+        conexion.commit()
+        conexion.close()
 
         return redirect(url_for("productos"))
+
+    conexion = conectar_bd()
+
+    productos = conexion.execute(
+        """
+        SELECT
+            id,
+            nombre,
+            descripcion,
+            categoria
+        FROM productos
+        ORDER BY id DESC
+        """
+    ).fetchall()
+
+    conexion.close()
 
     return render_template(
         "productos.html",
