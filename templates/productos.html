@@ -35,7 +35,11 @@ Productos y Servicios - TecnoWeb
                     <div class="card-body">
 
                         <h3 class="mb-4">
-                            Registrar Producto o Servicio
+                            {% if editando %}
+                                Modificar Producto o Servicio
+                            {% else %}
+                                Registrar Producto o Servicio
+                            {% endif %}
                         </h3>
 
                         <form method="POST">
@@ -109,13 +113,91 @@ Productos y Servicios - TecnoWeb
                             </div>
 
 
-                            <!-- BOTÓN -->
+                            <!-- PRECIO -->
 
-                            <div>
+                            <div class="mb-3">
+
+                                {{ form.precio.label(class="form-label") }}
+
+                                {{ form.precio(
+                                    class="form-control",
+                                    placeholder="Ingrese el precio",
+                                    step="0.01"
+                                ) }}
+
+                                {% for error in form.precio.errors %}
+
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- STOCK -->
+
+                            <div class="mb-3">
+
+                                {{ form.stock.label(class="form-label") }}
+
+                                {{ form.stock(
+                                    class="form-control",
+                                    placeholder="Ingrese el stock"
+                                ) }}
+
+                                {% for error in form.stock.errors %}
+
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- PROVEEDOR -->
+
+                            <div class="mb-3">
+
+                                {{ form.id_proveedor.label(class="form-label") }}
+
+                                {{ form.id_proveedor(
+                                    class="form-select"
+                                ) }}
+
+                                {% for error in form.id_proveedor.errors %}
+
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- BOTONES -->
+
+                            <div class="d-flex gap-2">
 
                                 {{ form.submit(
                                     class="btn btn-success"
                                 ) }}
+
+                                {% if editando %}
+
+                                    <a
+                                        href="{{ url_for('productos') }}"
+                                        class="btn btn-secondary">
+
+                                        Cancelar
+
+                                    </a>
+
+                                {% endif %}
 
                             </div>
 
@@ -141,7 +223,7 @@ Productos y Servicios - TecnoWeb
             <h3>Productos registrados</h3>
 
             <p>
-                Productos y servicios almacenados en la base de datos.
+                Productos y servicios almacenados en la base de datos MySQL.
             </p>
 
         </div>
@@ -161,9 +243,11 @@ Productos y Servicios - TecnoWeb
                             {{ producto.nombre }}
                         </h5>
 
+
                         <p class="card-text">
                             {{ producto.descripcion }}
                         </p>
+
 
                         <p class="mb-2">
 
@@ -172,15 +256,71 @@ Productos y Servicios - TecnoWeb
 
                         </p>
 
+
+                        <p class="mb-2">
+
+                            <strong>Precio:</strong>
+                            ${{ "%.2f"|format(producto.precio) }}
+
+                        </p>
+
+
+                        <p class="mb-2">
+
+                            <strong>Stock:</strong>
+                            {{ producto.stock }}
+
+                        </p>
+
+
+                        <p class="mb-3">
+
+                            <strong>Proveedor:</strong>
+                            {{ producto.proveedor }}
+
+                        </p>
+
+
+                        <!-- ACCIONES CRUD -->
+
                         <div class="mt-auto">
 
-                            <a
-                                href="{{ url_for('inicio') }}#registro"
-                                class="btn btn-success w-100">
+                            <div class="d-flex gap-2">
 
-                                Solicitar información
+                                <a
+                                    href="{{ url_for(
+                                        'editar_producto',
+                                        id_producto=producto.id_producto
+                                    ) }}"
+                                    class="btn btn-warning flex-fill">
 
-                            </a>
+                                    Modificar
+
+                                </a>
+
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'eliminar_producto',
+                                        id_producto=producto.id_producto
+                                    ) }}"
+                                    class="flex-fill"
+                                    onsubmit="return confirm(
+                                        '¿Está seguro de eliminar este producto?'
+                                    );">
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-danger w-100">
+
+                                        Eliminar
+
+                                    </button>
+
+                                </form>
+
+                            </div>
 
                         </div>
 

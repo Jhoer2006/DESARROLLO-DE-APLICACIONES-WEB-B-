@@ -1,89 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 from forms import ProductoForm, ClienteForm, ProveedorForm, FacturacionForm
-import sqlite3
+from conexion.conexion import obtener_conexion
 
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = "tecnoweb-clave-secreta"
-
-
-def conectar_bd():
-    conexion = sqlite3.connect("data/ferreteria.db")
-    conexion.row_factory = sqlite3.Row
-    return conexion
-
-
-def crear_tabla_productos():
-
-    conexion = conectar_bd()
-
-    conexion.execute("""
-        CREATE TABLE IF NOT EXISTS productos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL,
-            descripcion TEXT NOT NULL,
-            categoria TEXT NOT NULL
-        )
-    """)
-
-    conexion.commit()
-    conexion.close()
-
-
-def cargar_productos_iniciales():
-
-    productos_iniciales = [
-        (
-            "Página Web Empresarial",
-            "Sitio web profesional y adaptable para empresas y emprendimientos.",
-            "Desarrollo"
-        ),
-        (
-            "Tienda Virtual",
-            "Solución web para presentar productos y servicios de un negocio en línea.",
-            "Comercio Electrónico"
-        ),
-        (
-            "Aplicación Web",
-            "Aplicación desarrollada de acuerdo con las necesidades específicas de cada cliente.",
-            "Aplicaciones"
-        ),
-        (
-            "Diseño de Interfaces",
-            "Diseño de interfaces modernas, organizadas y adaptables a diferentes dispositivos.",
-            "Diseño"
-        )
-    ]
-
-    conexion = conectar_bd()
-
-    for producto in productos_iniciales:
-
-        existe = conexion.execute(
-            """
-            SELECT id
-            FROM productos
-            WHERE nombre = ?
-            """,
-            (producto[0],)
-        ).fetchone()
-
-        if existe is None:
-
-            conexion.execute(
-                """
-                INSERT INTO productos (nombre, descripcion, categoria)
-                VALUES (?, ?, ?)
-                """,
-                producto
-            )
-
-    conexion.commit()
-    conexion.close()
-
-
-crear_tabla_productos()
-cargar_productos_iniciales()
 
 
 # ============================================================
@@ -115,41 +36,87 @@ def productos():
 
     form = ProductoForm()
 
+    conexion = obtener_conexion()
+    cursor = conexion.cursor(dictionary=True)
+
+    # --------------------------------------------------------
+    # Cargar proveedores en el formulario
+    # --------------------------------------------------------
+
+    cursor.execute("""
+        SELECT id_proveedor, nombre
+        FROM proveedores
+        ORDER BY nombre
+    """)
+
+    proveedores = cursor.fetchall()
+
+    form.id_proveedor.choices = [
+        (proveedor["id_proveedor"], proveedor["nombre"])
+        for proveedor in proveedores
+    ]
+
+    # --------------------------------------------------------
+    # AGREGAR PRODUCTO - INSERT
+    # --------------------------------------------------------
+
     if form.validate_on_submit():
 
-        conexion = conectar_bd()
-
-        conexion.execute(
+        cursor.execute(
             """
-            INSERT INTO productos (nombre, descripcion, categoria)
-            VALUES (?, ?, ?)
+            INSERT INTO productos
+            (
+                nombre,
+                descripcion,
+                categoria,
+                precio,
+                stock,
+                id_proveedor
+            )
+            VALUES (%s, %s, %s, %s, %s, %s)
             """,
             (
                 form.nombre.data,
                 form.descripcion.data,
-                form.categoria.data
+                form.categoria.data,
+                form.precio.data,
+                form.stock.data,
+                form.id_proveedor.data
             )
         )
 
         conexion.commit()
+
+        cursor.close()
         conexion.close()
 
         return redirect(url_for("productos"))
 
-    conexion = conectar_bd()
+    # --------------------------------------------------------
+    # LISTAR PRODUCTOS - SELECT + JOIN
+    # --------------------------------------------------------
 
-    productos = conexion.execute(
+    cursor.execute(
         """
         SELECT
-            id,
-            nombre,
-            descripcion,
-            categoria
-        FROM productos
-        ORDER BY id DESC
+            p.id_producto,
+            p.nombre,
+            p.descripcion,
+            p.categoria,
+            p.precio,
+            p.stock,
+            p.id_proveedor,
+            pr.nombre AS proveedor
+        FROM productos p
+        INNER JOIN proveedores pr
+            ON p.id_proveedor = pr.id_proveedor
+        ORDER BY p.id_producto DESC
         """
-    ).fetchall()
+    )
 
+    productos = cursor.fetchall()
+
+    cursor.close()
     conexion.close()
 
     return render_template(
@@ -157,6 +124,191 @@ def productos():
         productos=productos,
         form=form
     )
+
+
+# ============================================================
+# MODIFICAR PRODUCTO
+# ============================================================
+
+@app.route(
+    "/productos/editar/<int:id_producto>",
+    methods=["GET", "POST"]
+)
+def editar_producto(id_producto):
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor(dictionary=True)
+
+    # --------------------------------------------------------
+    # BUSCAR PRODUCTO POR ID
+    # --------------------------------------------------------
+
+    cursor.execute(
+        """
+        SELECT
+            id_producto,
+            nombre,
+            descripcion,
+            categoria,
+            precio,
+            stock,
+            id_proveedor
+        FROM productos
+        WHERE id_producto = %s
+        """,
+        (id_producto,)
+    )
+
+    producto = cursor.fetchone()
+
+    # Si no existe, volver a Productos
+    if producto is None:
+
+        cursor.close()
+        conexion.close()
+
+        return redirect(url_for("productos"))
+
+    # --------------------------------------------------------
+    # CREAR FORMULARIO
+    # --------------------------------------------------------
+
+    form = ProductoForm()
+
+    # --------------------------------------------------------
+    # CARGAR PROVEEDORES
+    # --------------------------------------------------------
+
+    cursor.execute(
+        """
+        SELECT id_proveedor, nombre
+        FROM proveedores
+        ORDER BY nombre
+        """
+    )
+
+    proveedores = cursor.fetchall()
+
+    form.id_proveedor.choices = [
+        (proveedor["id_proveedor"], proveedor["nombre"])
+        for proveedor in proveedores
+    ]
+
+    # --------------------------------------------------------
+    # CARGAR DATOS EN EL FORMULARIO
+    # --------------------------------------------------------
+
+    if request.method == "GET":
+
+        form.nombre.data = producto["nombre"]
+        form.descripcion.data = producto["descripcion"]
+        form.categoria.data = producto["categoria"]
+        form.precio.data = producto["precio"]
+        form.stock.data = producto["stock"]
+        form.id_proveedor.data = producto["id_proveedor"]
+
+    # --------------------------------------------------------
+    # MODIFICAR PRODUCTO - UPDATE
+    # --------------------------------------------------------
+
+    if form.validate_on_submit():
+
+        cursor.execute(
+            """
+            UPDATE productos
+            SET
+                nombre = %s,
+                descripcion = %s,
+                categoria = %s,
+                precio = %s,
+                stock = %s,
+                id_proveedor = %s
+            WHERE id_producto = %s
+            """,
+            (
+                form.nombre.data,
+                form.descripcion.data,
+                form.categoria.data,
+                form.precio.data,
+                form.stock.data,
+                form.id_proveedor.data,
+                id_producto
+            )
+        )
+
+        conexion.commit()
+
+        cursor.close()
+        conexion.close()
+
+        return redirect(url_for("productos"))
+
+    # --------------------------------------------------------
+    # LISTAR PRODUCTOS PARA LA VISTA
+    # --------------------------------------------------------
+
+    cursor.execute(
+        """
+        SELECT
+            p.id_producto,
+            p.nombre,
+            p.descripcion,
+            p.categoria,
+            p.precio,
+            p.stock,
+            pr.nombre AS proveedor
+        FROM productos p
+        INNER JOIN proveedores pr
+            ON p.id_proveedor = pr.id_proveedor
+        ORDER BY p.id_producto DESC
+        """
+    )
+
+    productos = cursor.fetchall()
+
+    cursor.close()
+    conexion.close()
+
+    return render_template(
+        "productos.html",
+        productos=productos,
+        form=form,
+        editando=True,
+        id_producto=id_producto
+    )
+
+
+# ============================================================
+# ELIMINAR PRODUCTO
+# ============================================================
+
+@app.route(
+    "/productos/eliminar/<int:id_producto>",
+    methods=["POST"]
+)
+def eliminar_producto(id_producto):
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+
+    # --------------------------------------------------------
+    # ELIMINAR PRODUCTO - DELETE
+    # --------------------------------------------------------
+
+    cursor.execute(
+        """
+        DELETE FROM productos
+        WHERE id_producto = %s
+        """,
+        (id_producto,)
+    )
+
+    conexion.commit()
+
+    cursor.close()
+    conexion.close()
+
+    return redirect(url_for("productos"))
 
 
 # ============================================================
