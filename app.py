@@ -2,9 +2,59 @@ from flask import Flask, render_template, redirect, url_for, request
 from forms import ProductoForm, ClienteForm, ProveedorForm, FacturacionForm
 from conexion.conexion import obtener_conexion
 
+from flask_login import (
+    LoginManager,
+    login_user,
+    logout_user,
+    current_user,
+    login_required
+)
+
+from models import Usuario
+
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
+
+from forms.usuario_form import UsuarioForm
+from forms.login_form import LoginForm
+
+
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = "tecnoweb-clave-secreta"
+
+
+# ============================================================
+# CONFIGURACIÓN DE FLASK-LOGIN
+# ============================================================
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+
+    cursor.execute(
+        "SELECT id, usuario FROM usuarios WHERE id = %s",
+        (user_id,)
+    )
+
+    usuario = cursor.fetchone()
+
+    cursor.close()
+    conexion.close()
+
+    if usuario:
+        return Usuario(usuario[0], usuario[1])
+
+    return None
 
 
 # ============================================================
@@ -28,10 +78,154 @@ def inicio():
 
 
 # ============================================================
+# REGISTRO DE USUARIO
+# ============================================================
+
+@app.route("/crear-cuenta", methods=["GET", "POST"])
+def registro():
+
+    form = UsuarioForm()
+
+    if form.validate_on_submit():
+
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+
+        # Verificar si el usuario ya existe
+        cursor.execute(
+            "SELECT id FROM usuarios WHERE usuario = %s",
+            (form.usuario.data,)
+        )
+
+        usuario_existente = cursor.fetchone()
+
+        if usuario_existente:
+
+            cursor.close()
+            conexion.close()
+
+            form.usuario.errors.append(
+                "El usuario ya existe."
+            )
+
+            return render_template(
+                "registro.html",
+                form=form
+            )
+
+        # Generar hash de la contraseña
+        password_hash = generate_password_hash(
+            form.password.data
+        )
+
+        cursor.execute(
+            """
+            INSERT INTO usuarios (usuario, password)
+            VALUES (%s, %s)
+            """,
+            (
+                form.usuario.data,
+                password_hash
+            )
+        )
+
+        conexion.commit()
+
+        cursor.close()
+        conexion.close()
+
+        return redirect(url_for("login"))
+
+    return render_template(
+        "registro.html",
+        form=form
+    )
+
+
+# ============================================================
+# INICIO DE SESIÓN
+# ============================================================
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+
+        cursor.execute(
+            """
+            SELECT id, usuario, password
+            FROM usuarios
+            WHERE usuario = %s
+            """,
+            (form.usuario.data,)
+        )
+
+        usuario = cursor.fetchone()
+
+        cursor.close()
+        conexion.close()
+
+        if usuario and check_password_hash(
+            usuario[2],
+            form.password.data
+        ):
+
+            usuario_objeto = Usuario(
+                usuario[0],
+                usuario[1]
+            )
+
+            login_user(usuario_objeto)
+
+            return redirect(url_for("dashboard"))
+
+        form.password.errors.append(
+            "Usuario o contraseña incorrectos."
+        )
+
+    return render_template(
+        "login.html",
+        form=form
+    )
+
+
+# ============================================================
+# DASHBOARD
+# ============================================================
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+
+    return render_template(
+        "dashboard.html"
+    )
+
+
+# ============================================================
+# CERRAR SESIÓN
+# ============================================================
+
+@app.route("/logout")
+@login_required
+def logout():
+
+    logout_user()
+
+    return redirect(url_for("login"))
+
+
+# ============================================================
 # PRODUCTOS / SERVICIOS
 # ============================================================
 
 @app.route("/productos", methods=["GET", "POST"])
+@login_required
 def productos():
 
     form = ProductoForm()
@@ -52,7 +246,10 @@ def productos():
     proveedores = cursor.fetchall()
 
     form.id_proveedor.choices = [
-        (proveedor["id_proveedor"], proveedor["nombre"])
+        (
+            proveedor["id_proveedor"],
+            proveedor["nombre"]
+        )
         for proveedor in proveedores
     ]
 
@@ -134,6 +331,7 @@ def productos():
     "/productos/editar/<int:id_producto>",
     methods=["GET", "POST"]
 )
+@login_required
 def editar_producto(id_producto):
 
     conexion = obtener_conexion()
@@ -190,7 +388,10 @@ def editar_producto(id_producto):
     proveedores = cursor.fetchall()
 
     form.id_proveedor.choices = [
-        (proveedor["id_proveedor"], proveedor["nombre"])
+        (
+            proveedor["id_proveedor"],
+            proveedor["nombre"]
+        )
         for proveedor in proveedores
     ]
 
@@ -286,6 +487,7 @@ def editar_producto(id_producto):
     "/productos/eliminar/<int:id_producto>",
     methods=["POST"]
 )
+@login_required
 def eliminar_producto(id_producto):
 
     conexion = obtener_conexion()
@@ -316,6 +518,7 @@ def eliminar_producto(id_producto):
 # ============================================================
 
 @app.route("/clientes", methods=["GET", "POST"])
+@login_required
 def clientes():
 
     clientes = [
@@ -375,6 +578,7 @@ def clientes():
 # ============================================================
 
 @app.route("/proveedores", methods=["GET", "POST"])
+@login_required
 def proveedores():
 
     proveedores = [
@@ -434,6 +638,7 @@ def proveedores():
 # ============================================================
 
 @app.route("/facturacion", methods=["GET", "POST"])
+@login_required
 def facturacion():
 
     facturas = [
