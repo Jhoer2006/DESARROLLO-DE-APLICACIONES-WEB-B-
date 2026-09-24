@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request
 from forms import ProductoForm, ClienteForm, ProveedorForm, FacturacionForm
 from conexion.conexion import obtener_conexion
+from psycopg2.extras import RealDictCursor
 
 from flask_login import (
     LoginManager,
@@ -231,7 +232,7 @@ def productos():
     form = ProductoForm()
 
     conexion = obtener_conexion()
-    cursor = conexion.cursor(dictionary=True)
+    cursor = conexion.cursor(cursor_factory=RealDictCursor)
 
     # --------------------------------------------------------
     # Cargar proveedores en el formulario
@@ -335,7 +336,7 @@ def productos():
 def editar_producto(id_producto):
 
     conexion = obtener_conexion()
-    cursor = conexion.cursor(dictionary=True)
+    cursor = conexion.cursor(cursor_factory=RealDictCursor)
 
     # --------------------------------------------------------
     # BUSCAR PRODUCTO POR ID
