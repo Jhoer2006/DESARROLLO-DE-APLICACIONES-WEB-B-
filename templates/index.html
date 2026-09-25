@@ -6,13 +6,19 @@ TecnoWeb - Desarrollo y Soluciones Web
 
 {% block content %}
 
+<!-- ========================= -->
+<!-- INICIO -->
+<!-- ========================= -->
+
 <section id="inicio">
 
     <div class="row align-items-center">
 
         <div class="col-md-6">
 
-            <h2>Bienvenido a {{ empresa }}</h2>
+            <h2>
+                Bienvenido a {{ empresa }}
+            </h2>
 
             <p>
                 {{ descripcion_empresa }}
@@ -28,16 +34,24 @@ TecnoWeb - Desarrollo y Soluciones Web
                 dispositivos.
             </p>
 
-            <a href="#contacto" class="btn btn-success">
-                Contáctenos
+            <a
+                href="#registro"
+                class="btn btn-success">
+
+                Solicitar cotización
+
             </a>
 
         </div>
 
+
         <div class="col-md-6">
 
             <img
-                src="{{ url_for('static', filename='img/desarrollo-web.jpg') }}"
+                src="{{ url_for(
+                    'static',
+                    filename='img/desarrollo-web.jpg'
+                ) }}"
                 alt="Desarrollo de soluciones web"
                 class="img-fluid shadow">
 
@@ -48,9 +62,15 @@ TecnoWeb - Desarrollo y Soluciones Web
 </section>
 
 
+<!-- ========================= -->
+<!-- QUIÉNES SOMOS -->
+<!-- ========================= -->
+
 <section id="quienes-somos">
 
-    <h2 class="mt-5">Quiénes Somos</h2>
+    <h2 class="mt-5">
+        Quiénes Somos
+    </h2>
 
     <article>
 
@@ -72,19 +92,27 @@ TecnoWeb - Desarrollo y Soluciones Web
 </section>
 
 
+<!-- ========================= -->
+<!-- SERVICIOS -->
+<!-- ========================= -->
+
 <section id="servicios">
 
     <h2 class="text-center mt-5 mb-4">
         Nuestros Servicios
     </h2>
 
+
     <div class="row">
+
+
+        <!-- DESARROLLO WEB -->
 
         <div class="col-md-4 mb-3">
 
-            <div class="card h-100">
+            <div class="card h-100 shadow-sm">
 
-                <div class="card-body">
+                <div class="card-body d-flex flex-column">
 
                     <h5 class="card-title">
                         Desarrollo Web
@@ -95,6 +123,14 @@ TecnoWeb - Desarrollo y Soluciones Web
                         para empresas, negocios y emprendimientos.
                     </p>
 
+                    <a
+                        href="#registro"
+                        class="btn btn-primary mt-auto">
+
+                        Solicitar cotización
+
+                    </a>
+
                 </div>
 
             </div>
@@ -102,11 +138,13 @@ TecnoWeb - Desarrollo y Soluciones Web
         </div>
 
 
+        <!-- TIENDAS VIRTUALES -->
+
         <div class="col-md-4 mb-3">
 
-            <div class="card h-100">
+            <div class="card h-100 shadow-sm">
 
-                <div class="card-body">
+                <div class="card-body d-flex flex-column">
 
                     <h5 class="card-title">
                         Tiendas Virtuales
@@ -117,6 +155,14 @@ TecnoWeb - Desarrollo y Soluciones Web
                         y servicios de negocios en Internet.
                     </p>
 
+                    <a
+                        href="#registro"
+                        class="btn btn-primary mt-auto">
+
+                        Solicitar cotización
+
+                    </a>
+
                 </div>
 
             </div>
@@ -124,11 +170,13 @@ TecnoWeb - Desarrollo y Soluciones Web
         </div>
 
 
+        <!-- APLICACIONES WEB -->
+
         <div class="col-md-4 mb-3">
 
-            <div class="card h-100">
+            <div class="card h-100 shadow-sm">
 
-                <div class="card-body">
+                <div class="card-body d-flex flex-column">
 
                     <h5 class="card-title">
                         Aplicaciones Web
@@ -139,6 +187,14 @@ TecnoWeb - Desarrollo y Soluciones Web
                         requerimientos y necesidades de cada cliente.
                     </p>
 
+                    <a
+                        href="#registro"
+                        class="btn btn-primary mt-auto">
+
+                        Solicitar cotización
+
+                    </a>
+
                 </div>
 
             </div>
@@ -150,128 +206,183 @@ TecnoWeb - Desarrollo y Soluciones Web
 </section>
 
 
-<section id="contacto">
+<!-- ========================= -->
+<!-- SOLICITAR COTIZACIÓN -->
+<!-- ========================= -->
 
-    <h2 class="mt-5">Contacto</h2>
+<section
+    id="registro"
+    class="mt-5">
+
+    <h2 class="text-center mb-4">
+        Solicita una Cotización
+    </h2>
+
 
     <div class="row">
 
-        <div class="col-md-6 mb-3">
+        <div class="col-lg-8 mx-auto">
 
-            <p>
-                <strong>Empresa:</strong> {{ empresa }}
-            </p>
+            <div class="card shadow-sm">
 
-            <p>
-                <strong>Correo:</strong>
-                jf.fernandezm@uea.edu.ec
-            </p>
+                <div class="card-body">
 
-            <p>
-                <strong>Teléfono:</strong>
-                0983992635
-            </p>
+                    <p class="text-muted mb-4">
 
-            <p>
-                <strong>Dirección:</strong>
-                Puyo - Pastaza
-            </p>
+                        Complete el siguiente formulario para contarnos
+                        qué necesita. Nuestro equipo revisará su solicitud
+                        y posteriormente se pondrá en contacto con usted.
 
-            <p>
-
-                <a href="https://www.facebook.com/"
-                   target="_blank">
-                    Facebook
-                </a>
-
-                |
-
-                <a href="https://www.instagram.com/"
-                   target="_blank">
-                    Instagram
-                </a>
-
-                |
-
-                <a href="https://wa.me/593983992635"
-                   target="_blank">
-                    WhatsApp
-                </a>
-
-            </p>
-
-        </div>
+                    </p>
 
 
-        <div class="col-md-6">
-
-            <form>
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">
-                            Nombre
-                        </label>
+                    <form method="POST">
+                        <input
+                            type="hidden"
+                            name="tipo_formulario"
+                            value="cotizacion">
 
                         <input
-                            type="text"
-                            class="form-control">
+                            type="hidden"
+                            name="id_producto"
+                            value="{{ producto_id or '' }}">
 
-                    </div>
+
+                        <!-- NOMBRE -->
+
+                        <div class="mb-3">
+
+                            <label
+                                for="nombre"
+                                class="form-label">
+
+                                Nombre completo
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nombre"
+                                name="nombre"
+                                class="form-control"
+                                placeholder="Ingrese su nombre completo"
+                                required>
+
+                        </div>
 
 
-                    <div class="col-md-6 mb-3">
+                        <!-- CORREO -->
 
-                        <label class="form-label">
-                            Correo Electrónico
-                        </label>
+                        <div class="mb-3">
 
-                        <input
-                            type="email"
-                            class="form-control">
+                            <label
+                                for="correo"
+                                class="form-label">
 
-                    </div>
+                                Correo electrónico
+
+                            </label>
+
+                            <input
+                                type="email"
+                                id="correo"
+                                name="correo"
+                                class="form-control"
+                                placeholder="ejemplo@correo.com"
+                                required>
+
+                        </div>
+
+
+                        <!-- SERVICIO -->
+
+                        <div class="mb-3">
+
+                            <label
+                                for="servicio"
+                                class="form-label">
+
+                                Servicio de interés
+
+                            </label>
+
+                            <select
+                                id="servicio"
+                                name="servicio"
+                                class="form-select"
+                                required>
+
+                                <option value="">
+                                    Seleccione un servicio
+                                </option>
+
+                                <option value="Desarrollo Web">
+                                    Desarrollo Web
+                                </option>
+
+                                <option value="Tienda Virtual">
+                                    Tienda Virtual
+                                </option>
+
+                                <option value="Aplicación Web">
+                                    Aplicación Web
+                                </option>
+
+                                <option value="Diseño de Interfaces">
+                                    Diseño de Interfaces
+                                </option>
+
+                                <option value="Mantenimiento Web">
+                                    Mantenimiento Web
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- DESCRIPCIÓN -->
+
+                        <div class="mb-3">
+
+                            <label
+                                for="descripcion"
+                                class="form-label">
+
+                                Descripción de la necesidad
+
+                            </label>
+
+                            <textarea
+                                id="descripcion"
+                                name="descripcion"
+                                class="form-control"
+                                rows="5"
+                                placeholder="Describa brevemente lo que necesita para su proyecto."
+                                required></textarea>
+
+                        </div>
+
+
+                        <!-- BOTÓN -->
+
+                        <div class="d-grid">
+
+                            <button
+                                type="submit"
+                                class="btn btn-success">
+
+                                Solicitar cotización
+
+                            </button>
+
+                        </div>
+
+                    </form>
 
                 </div>
 
-
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        Asunto
-                    </label>
-
-                    <input
-                        type="text"
-                        class="form-control">
-
-                </div>
-
-
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        Mensaje
-                    </label>
-
-                    <textarea
-                        class="form-control"
-                        rows="4"></textarea>
-
-                </div>
-
-
-                <button
-                    type="submit"
-                    class="btn btn-success">
-
-                    Enviar Mensaje
-
-                </button>
-
-            </form>
+            </div>
 
         </div>
 
@@ -280,11 +391,16 @@ TecnoWeb - Desarrollo y Soluciones Web
 </section>
 
 
+<!-- ========================= -->
+<!-- VIDEO -->
+<!-- ========================= -->
+
 <section>
 
     <h2 class="mt-5">
         Conozca más sobre Desarrollo Web
     </h2>
+
 
     <div class="row">
 
@@ -304,183 +420,282 @@ TecnoWeb - Desarrollo y Soluciones Web
 </section>
 
 
-<section id="registro" class="mt-5">
+<!-- ========================= -->
+<!-- CONTACTO -->
+<!-- ========================= -->
 
-    <h2>
-        Solicita una Cotización
+<section id="contacto">
+
+    <h2 class="mt-5">
+        Contacto
     </h2>
+
+
+   
+
 
     <div class="row">
 
-        <div class="col-lg-7">
 
-            <form id="formRegistro">
+        <!-- INFORMACIÓN DE CONTACTO -->
 
-                <div class="row">
+        <div class="col-md-6 mb-3">
 
-                    <div class="col-md-6 mb-3">
+            <p>
+                <strong>Empresa:</strong>
+                {{ empresa }}
+            </p>
 
-                        <label class="form-label">
-                            Nombre
-                        </label>
+
+            <p>
+                <strong>Correo:</strong>
+                jf.fernandezm@uea.edu.ec
+            </p>
+
+
+            <p>
+                <strong>Teléfono:</strong>
+                0983992635
+            </p>
+
+
+            <p>
+                <strong>Dirección:</strong>
+                Puyo - Pastaza
+            </p>
+
+
+            <p>
+
+                <a
+                    href="https://www.facebook.com/"
+                    target="_blank">
+
+                    Facebook
+
+                </a>
+
+                |
+
+                <a
+                    href="https://www.instagram.com/"
+                    target="_blank">
+
+                    Instagram
+
+                </a>
+
+                |
+
+                <a
+                    href="https://wa.me/593983992635"
+                    target="_blank">
+
+                    WhatsApp
+
+                </a>
+
+            </p>
+
+        </div>
+
+
+        <!-- AQUÍ CONTINÚA TU FORMULARIO DE CONTACTO -->
+
+
+
+        <!-- FORMULARIO DE CONTACTO -->
+
+        <div class="col-md-6">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <form method="POST">
 
                         <input
-                            type="text"
-                            id="nombreRegistro"
-                            class="form-control">
+                            type="hidden"
+                            name="tipo_formulario"
+                            value="contacto">
 
-                        <div
-                            id="errorNombre"
-                            class="text-danger mt-1">
+
+                        <div class="row">
+
+
+                            <!-- NOMBRE -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <label
+                                    for="contactoNombre"
+                                    class="form-label">
+
+                                    Nombre
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="contactoNombre"
+                                    name="contacto_nombre"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+
+                            <!-- CORREO -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <label
+                                    for="contactoCorreo"
+                                    class="form-label">
+
+                                    Correo Electrónico
+
+                                </label>
+
+                                <input
+                                    type="email"
+                                    id="contactoCorreo"
+                                    name="contacto_correo"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
                         </div>
 
-                    </div>
 
+                        <!-- ASUNTO -->
 
-                    <div class="col-md-6 mb-3">
+                        <div class="mb-3">
 
-                        <label class="form-label">
-                            Servicio de interés
-                        </label>
+                            <label
+                                for="contactoAsunto"
+                                class="form-label">
 
-                        <select
-                            id="categoriaRegistro"
-                            class="form-select">
+                                Asunto
 
-                            <option value="">
-                                Seleccione
-                            </option>
+                            </label>
 
-                            <option>
-                                Página Web
-                            </option>
+                            <input
+                                type="text"
+                                id="contactoAsunto"
+                                name="contacto_asunto"
+                                class="form-control"
+                                required>
 
-                            <option>
-                                Tienda Virtual
-                            </option>
-
-                            <option>
-                                Aplicación Web
-                            </option>
-
-                            <option>
-                                Diseño de Interfaces
-                            </option>
-
-                            <option>
-                                Mantenimiento Web
-                            </option>
-
-                        </select>
-
-                        <div
-                            id="errorCategoria"
-                            class="text-danger mt-1">
                         </div>
 
-                    </div>
 
-                </div>
+                        <!-- MENSAJE -->
 
+                        <div class="mb-3">
 
-                <div class="mb-3">
+                            <label
+                                for="contactoMensaje"
+                                class="form-label">
 
-                    <label class="form-label">
-                        Descripción de la necesidad
-                    </label>
+                                Mensaje
 
-                    <textarea
-                        id="descripcionRegistro"
-                        class="form-control"
-                        rows="3">
-                    </textarea>
+                            </label>
 
-                    <div
-                        id="errorDescripcion"
-                        class="text-danger mt-1">
-                    </div>
+                            <textarea
+                                id="contactoMensaje"
+                                name="contacto_mensaje"
+                                class="form-control"
+                                rows="4"
+                                required></textarea>
 
-                </div>
+                        </div>
 
 
-                <button
-                    type="submit"
-                    class="btn btn-success"
-                    id="btnAgregar">
+                        <button
+                            type="submit"
+                            class="btn btn-success">
 
-                    <span
-                        id="spinnerAgregar"
-                        class="spinner-border spinner-border-sm d-none"
-                        role="status"
-                        aria-hidden="true">
-                    </span>
+                            Enviar Mensaje
 
-                    <span id="textoBoton">
-                        Registrar Solicitud
-                    </span>
+                        </button>
 
-                </button>
+                    </form>
+                    
+<!-- MENSAJE DE ÉXITO -->
 
-            </form>
+{% with mensajes = get_flashed_messages(with_categories=true) %}
 
+    {% if mensajes %}
+
+        {% for categoria, mensaje in mensajes %}
 
             <div
-                id="mensaje"
-                class="mt-3">
-            </div>
-
-        </div>
-
-
-        <div class="col-lg-5">
-
-            <div
-                class="alert alert-info mt-3 mt-lg-0"
+                id="mensajeExito"
+                class="alert alert-success alert-dismissible fade show mt-3"
                 role="alert">
 
-                Complete el formulario y seleccione el servicio
-                que le interesa. Indique brevemente las necesidades
-                de su proyecto para que podamos conocer mejor
-                su solicitud.
+                <strong>¡Éxito!</strong>
+                {{ mensaje }}
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+{% endwith %}
+
+
+                </div>
 
             </div>
 
         </div>
 
     </div>
+<script>
 
+    setTimeout(function () {
 
-    <h4 class="mt-4">
+        const mensaje = document.getElementById("mensajeExito");
 
-        Total de solicitudes:
+        if (mensaje) {
 
-        <span
-            id="contador"
-            class="badge bg-success">
-            0
-        </span>
+            mensaje.classList.remove("show");
 
-    </h4>
+            setTimeout(function () {
 
+                mensaje.remove();
 
-    <div
-        id="listaRegistros"
-        class="row mt-3">
-    </div>
+            }, 500);
+
+        }
+
+    }, 3000);
+
+</script>    
 
 </section>
 
 
+<!-- ========================= -->
+<!-- INFORMACIÓN ADICIONAL -->
+<!-- ========================= -->
+
 <aside>
 
-    <h2>
+    <h2 class="mt-5">
         Información Adicional
     </h2>
+
 
     <p>
         Horario referencial de atención:
         lunes a viernes de 08:00 a 17:00.
     </p>
+
 
     <p>
         En {{ empresa }} trabajamos en el desarrollo de
@@ -491,7 +706,9 @@ TecnoWeb - Desarrollo y Soluciones Web
 </aside>
 
 
-<!-- Modal de confirmación de eliminación -->
+<!-- ========================= -->
+<!-- MODAL DE CONFIRMACIÓN -->
+<!-- ========================= -->
 
 <div
     class="modal fade"
@@ -504,6 +721,7 @@ TecnoWeb - Desarrollo y Soluciones Web
 
         <div class="modal-content">
 
+
             <div class="modal-header bg-success text-white">
 
                 <h5
@@ -513,6 +731,7 @@ TecnoWeb - Desarrollo y Soluciones Web
                     Confirmar eliminación
 
                 </h5>
+
 
                 <button
                     type="button"

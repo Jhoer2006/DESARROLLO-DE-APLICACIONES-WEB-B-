@@ -1,108 +1,179 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top">
+
     <div class="container">
 
         <a class="navbar-brand fw-bold" href="{{ url_for('inicio') }}">
             TecnoWeb
         </a>
 
-        <button class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#menu"
-                aria-controls="menu"
-                aria-expanded="false"
-                aria-label="Mostrar navegación">
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#menu"
+            aria-controls="menu"
+            aria-expanded="false"
+            aria-label="Mostrar navegación">
 
             <span class="navbar-toggler-icon"></span>
 
         </button>
 
+
         <div class="collapse navbar-collapse" id="menu">
 
             <ul class="navbar-nav ms-auto">
 
+
+                <!-- INICIO -->
+
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('inicio') }}">
+
+                    <a
+                        class="nav-link"
+                        href="{{ url_for('inicio') }}">
+
                         Inicio
+
                     </a>
+
                 </li>
 
+
+                <!-- QUIÉNES SOMOS -->
+
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('inicio') }}#quienes-somos">
+
+                    <a
+                        class="nav-link"
+                        href="{{ url_for('inicio') }}#quienes-somos">
+
                         Quiénes Somos
+
                     </a>
+
                 </li>
 
+
+                <!-- SERVICIOS -->
+
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('inicio') }}#servicios">
+
+                    <a
+                        class="nav-link"
+                        href="{{ url_for('inicio') }}#servicios">
+
                         Servicios
+
                     </a>
+
                 </li>
 
+
+                <!-- PRODUCTOS -->
+
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('productos') }}">
+
+                    <a
+                        class="nav-link"
+                        href="{{ url_for('productos') }}">
+
                         Productos
+
                     </a>
+
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('clientes') }}">
-                        Clientes
-                    </a>
-                </li>
+
+                <!-- SOLICITAR COTIZACIÓN -->
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('proveedores') }}">
-                        Proveedores
+
+                    <a
+                        class="nav-link"
+                        href="{{ url_for('inicio') }}#registro">
+
+                        Solicitar cotización
+
                     </a>
+
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('facturacion') }}">
-                        Facturación
-                    </a>
-                </li>
 
-                <!-- Registro de solicitud de cotización -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('inicio') }}#registro">
-                        Registro
-                    </a>
-                </li>
+                <!-- CONTACTO -->
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('inicio') }}#contacto">
+
+                    <a
+                        class="nav-link"
+                        href="{{ url_for('inicio') }}#contacto">
+
                         Contacto
+
                     </a>
+
                 </li>
+
 
                 {% if current_user.is_authenticated %}
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard') }}">
-                            Panel
-                        </a>
-                    </li>
+
+                    <!-- PANEL ADMINISTRATIVO -->
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">
-                            Cerrar sesión
+
+                        <a
+                            class="nav-link"
+                            href="{{ url_for('dashboard') }}">
+
+                            Panel
+
                         </a>
+
                     </li>
+
+
+                    <!-- CERRAR SESIÓN -->
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="{{ url_for('logout') }}">
+
+                            Cerrar sesión
+
+                        </a>
+
+                    </li>
+
 
                 {% else %}
 
+
+                    <!-- INICIAR SESIÓN -->
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">
+
+                        <a
+                            class="nav-link"
+                            href="{{ url_for('login') }}">
+
                             Iniciar sesión
+
                         </a>
+
                     </li>
 
+
                 {% endif %}
+
 
             </ul>
 
         </div>
 
     </div>
+
 </nav>

@@ -1,102 +1,630 @@
 {% extends "base.html" %}
 
-{% block title %}Panel principal - TecnoWeb{% endblock %}
+{% block title %}
+Panel principal - TecnoWeb
+{% endblock %}
 
 {% block content %}
 
 <div class="container py-5">
 
+    <!-- ENCABEZADO -->
+
     <div class="text-center mb-5">
 
-        <h1>Panel principal</h1>
+        <h1>
+            Panel principal
+        </h1>
 
         <p class="lead">
             Bienvenido, {{ current_user.usuario }}
         </p>
 
         <p>
-            Desde este panel puede acceder a los módulos de TecnoWeb.
+            Desde este panel puede acceder a los módulos de TecnoWeb
+            y revisar las solicitudes de cotización recibidas.
         </p>
 
     </div>
 
+
+    <!-- MÓDULOS ADMINISTRATIVOS -->
+
     <div class="row g-4">
 
+        <!-- PRODUCTOS -->
+
         <div class="col-md-6 col-lg-3">
+
             <div class="card h-100 shadow-sm">
+
                 <div class="card-body text-center">
-                    <h5 class="card-title">Productos</h5>
+
+                    <h5 class="card-title">
+                        Productos
+                    </h5>
 
                     <p class="card-text">
                         Gestionar productos y servicios.
                     </p>
 
-                    <a href="{{ url_for('productos') }}"
-                       class="btn btn-primary">
+                    <a
+                        href="{{ url_for('productos') }}"
+                        class="btn btn-primary">
+
                         Ir a Productos
+
                     </a>
+
                 </div>
+
             </div>
+
         </div>
 
+
+        <!-- CLIENTES -->
+
         <div class="col-md-6 col-lg-3">
+
             <div class="card h-100 shadow-sm">
+
                 <div class="card-body text-center">
-                    <h5 class="card-title">Clientes</h5>
+
+                    <h5 class="card-title">
+                        Clientes
+                    </h5>
 
                     <p class="card-text">
                         Gestionar información de clientes.
                     </p>
 
-                    <a href="{{ url_for('clientes') }}"
-                       class="btn btn-primary">
+                    <a
+                        href="{{ url_for('clientes') }}"
+                        class="btn btn-primary">
+
                         Ir a Clientes
+
                     </a>
+
                 </div>
+
             </div>
+
         </div>
 
+
+        <!-- PROVEEDORES -->
+
         <div class="col-md-6 col-lg-3">
+
             <div class="card h-100 shadow-sm">
+
                 <div class="card-body text-center">
-                    <h5 class="card-title">Proveedores</h5>
+
+                    <h5 class="card-title">
+                        Proveedores
+                    </h5>
 
                     <p class="card-text">
                         Gestionar proveedores.
                     </p>
 
-                    <a href="{{ url_for('proveedores') }}"
-                       class="btn btn-primary">
+                    <a
+                        href="{{ url_for('proveedores') }}"
+                        class="btn btn-primary">
+
                         Ir a Proveedores
+
                     </a>
+
                 </div>
+
             </div>
+
         </div>
 
+
+        <!-- FACTURACIÓN -->
+
         <div class="col-md-6 col-lg-3">
+
             <div class="card h-100 shadow-sm">
+
                 <div class="card-body text-center">
-                    <h5 class="card-title">Facturación</h5>
+
+                    <h5 class="card-title">
+                        Facturación
+                    </h5>
 
                     <p class="card-text">
                         Gestionar facturación.
                     </p>
 
-                    <a href="{{ url_for('facturacion') }}"
-                       class="btn btn-primary">
+                    <a
+                        href="{{ url_for('facturacion') }}"
+                        class="btn btn-primary">
+
                         Ir a Facturación
+
                     </a>
+
                 </div>
+
             </div>
+
         </div>
 
     </div>
 
+
+    <!-- SOLICITUDES DE COTIZACIÓN -->
+
+    <section class="mt-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <div>
+
+                <h2>
+                    Solicitudes de cotización
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Solicitudes recibidas desde el formulario público.
+                </p>
+
+            </div>
+
+            <span class="badge bg-warning text-dark fs-6">
+
+                {{ solicitudes|length }} solicitud(es)
+
+            </span>
+
+        </div>
+
+
+        {% if solicitudes %}
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead class="table-success">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Correo</th>
+                        <th>Servicio</th>
+                        <th>Producto</th>
+                        <th>Descripción</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Cotización</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for solicitud in solicitudes %}
+
+                    <tr>
+
+                        <!-- ID -->
+
+                        <td>
+                            {{ solicitud.id_solicitud }}
+                        </td>
+
+
+                        <!-- CLIENTE -->
+
+                        <td>
+                            {{ solicitud.nombre }}
+                        </td>
+
+
+                        <!-- CORREO -->
+
+                        <td>
+                            {{ solicitud.correo }}
+                        </td>
+
+
+                        <!-- SERVICIO -->
+
+                        <td>
+                            {{ solicitud.servicio }}
+                        </td>
+
+
+                        <!-- PRODUCTO -->
+
+                        <td>
+                            {{ solicitud.producto or "No especificado" }}
+                        </td>
+
+
+                        <!-- DESCRIPCIÓN -->
+
+                        <td>
+                            {{ solicitud.descripcion }}
+                        </td>
+
+
+                        <!-- FECHA -->
+
+                        <td>
+                            {{ solicitud.fecha.strftime('%d/%m/%Y %H:%M') }}
+                        </td>
+
+
+                        <!-- ESTADO -->
+
+                        <td>
+
+                            <span class="badge bg-warning text-dark mb-2">
+                                {{ solicitud.estado }}
+                            </span>
+
+
+                            <!-- CAMBIAR ESTADO -->
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'cambiar_estado_solicitud',
+                                    id_solicitud=solicitud.id_solicitud
+                                ) }}">
+
+                                <select
+                                    name="estado"
+                                    class="form-select form-select-sm mb-2">
+
+                                    <option
+                                        value="Pendiente"
+                                        {% if solicitud.estado == "Pendiente" %}selected{% endif %}>
+                                        Pendiente
+                                    </option>
+
+                                    <option
+                                        value="En revisión"
+                                        {% if solicitud.estado == "En revisión" %}selected{% endif %}>
+                                        En revisión
+                                    </option>
+
+                                    <option
+                                        value="Cotizada"
+                                        {% if solicitud.estado == "Cotizada" %}selected{% endif %}>
+                                        Cotizada
+                                    </option>
+
+                                    <option
+                                        value="Aceptada"
+                                        {% if solicitud.estado == "Aceptada" %}selected{% endif %}>
+                                        Aceptada
+                                    </option>
+
+                                    <option
+                                        value="En desarrollo"
+                                        {% if solicitud.estado == "En desarrollo" %}selected{% endif %}>
+                                        En desarrollo
+                                    </option>
+
+                                    <option
+                                        value="Finalizada"
+                                        {% if solicitud.estado == "Finalizada" %}selected{% endif %}>
+                                        Finalizada
+                                    </option>
+
+                                </select>
+
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-sm btn-primary w-100">
+
+                                    Actualizar
+
+                                </button>
+
+                            </form>
+
+                        </td>
+
+
+                        <!-- COTIZACIÓN -->
+
+                        <td>
+
+                            {% if solicitud.id_cotizacion %}
+
+                                <strong>
+                                    ${{ "%.2f"|format(solicitud.precio_cotizacion) }}
+                                </strong>
+
+                                <p class="small mb-2">
+                                    {{ solicitud.descripcion_cotizacion }}
+                                </p>
+
+
+                                <span class="badge bg-secondary mb-2">
+                                    {{ solicitud.estado_cotizacion }}
+                                </span>
+
+
+                                <!-- CAMBIAR ESTADO DE COTIZACIÓN -->
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'cambiar_estado_cotizacion',
+                                        id_cotizacion=solicitud.id_cotizacion
+                                    ) }}">
+
+                                    <select
+                                        name="estado"
+                                        class="form-select form-select-sm mb-2">
+
+                                        <option
+                                            value="Pendiente"
+                                            {% if solicitud.estado_cotizacion == "Pendiente" %}selected{% endif %}>
+                                            Pendiente
+                                        </option>
+
+                                        <option
+                                            value="Aceptada"
+                                            {% if solicitud.estado_cotizacion == "Aceptada" %}selected{% endif %}>
+                                            Aceptada
+                                        </option>
+
+                                        <option
+                                            value="Rechazada"
+                                            {% if solicitud.estado_cotizacion == "Rechazada" %}selected{% endif %}>
+                                            Rechazada
+                                        </option>
+
+                                    </select>
+
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-secondary w-100">
+
+                                        Actualizar cotización
+
+                                    </button>
+
+                                </form>
+
+
+                                <!-- CREAR FACTURA -->
+
+                                {% if solicitud.estado_cotizacion == "Aceptada" %}
+
+                                    <hr>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for(
+                                            'crear_factura',
+                                            id_cotizacion=solicitud.id_cotizacion
+                                        ) }}">
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-success btn-sm w-100">
+
+                                            Crear factura
+
+                                        </button>
+
+                                    </form>
+
+                                {% endif %}
+
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    Sin cotización
+                                </span>
+
+
+                                <hr>
+
+
+                                <!-- CREAR COTIZACIÓN -->
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'crear_cotizacion',
+                                        id_solicitud=solicitud.id_solicitud
+                                    ) }}">
+
+                                    <input
+                                        type="number"
+                                        name="precio"
+                                        class="form-control form-control-sm mb-2"
+                                        placeholder="Precio"
+                                        step="0.01"
+                                        min="0"
+                                        required>
+
+
+                                    <textarea
+                                        name="descripcion"
+                                        class="form-control form-control-sm mb-2"
+                                        rows="2"
+                                        placeholder="Descripción de la cotización"
+                                        required></textarea>
+
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-success w-100">
+
+                                        Crear cotización
+
+                                    </button>
+
+                                </form>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="alert alert-info">
+
+            No existen solicitudes de cotización registradas.
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- MENSAJES DE CONTACTO -->
+    <!-- ========================= -->
+
+    <section class="mt-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <div>
+
+                <h2>
+                    Mensajes de contacto
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Mensajes recibidos desde el formulario de contacto.
+                </p>
+
+            </div>
+
+            <span class="badge bg-info text-dark fs-6">
+                {{ mensajes_contacto|length }} mensaje(s)
+            </span>
+
+        </div>
+
+
+        {% if mensajes_contacto %}
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead class="table-success">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Asunto</th>
+                        <th>Mensaje</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for mensaje in mensajes_contacto %}
+
+                    <tr>
+
+                        <td>
+                            {{ mensaje.id_mensaje }}
+                        </td>
+
+                        <td>
+                            {{ mensaje.nombre }}
+                        </td>
+
+                        <td>
+                            {{ mensaje.correo }}
+                        </td>
+
+                        <td>
+                            {{ mensaje.asunto }}
+                        </td>
+
+                        <td>
+                            {{ mensaje.mensaje }}
+                        </td>
+
+                        <td>
+                            {{ mensaje.fecha.strftime('%d/%m/%Y %H:%M') }}
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-warning text-dark">
+                                {{ mensaje.estado }}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="alert alert-info">
+
+            No existen mensajes de contacto registrados.
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- CERRAR SESIÓN -->
+
     <div class="text-center mt-5">
 
-        <a href="{{ url_for('logout') }}"
-           class="btn btn-outline-danger">
+        <a
+            href="{{ url_for('logout') }}"
+            class="btn btn-outline-danger">
+
             Cerrar sesión
+
         </a>
 
     </div>

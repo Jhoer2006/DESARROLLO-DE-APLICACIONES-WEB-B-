@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, flash
 from forms import ProductoForm, ClienteForm, ProveedorForm, FacturacionForm
 from conexion.conexion import obtener_conexion
 from psycopg2.extras import RealDictCursor
@@ -62,22 +62,160 @@ def load_user(user_id):
 # PÁGINA PRINCIPAL
 # ============================================================
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def inicio():
 
     empresa = "TecnoWeb"
+
+    producto_id = request.args.get("producto")
 
     descripcion_empresa = (
         "Desarrollo y Soluciones Web para negocios y emprendimientos."
     )
 
+    if request.method == "POST":
+
+        tipo_formulario = request.form.get("tipo_formulario")
+
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+
+        # ==========================================================
+        # FORMULARIO DE CONTACTO
+        # ==========================================================
+
+        if tipo_formulario == "contacto":
+
+            nombre = request.form.get("contacto_nombre")
+            correo = request.form.get("contacto_correo")
+            asunto = request.form.get("contacto_asunto")
+            mensaje = request.form.get("contacto_mensaje")
+
+            cursor.execute(
+                """
+                INSERT INTO mensajes_contacto
+                (
+                    nombre,
+                    correo,
+                    asunto,
+                    mensaje
+                )
+                VALUES (%s, %s, %s, %s)
+                """,
+                (
+                    nombre,
+                    correo,
+                    asunto,
+                    mensaje
+                )
+            )
+
+            conexion.commit()
+            flash("Mensaje enviado con éxito.", "success")
+
+            cursor.close()
+            conexion.close()
+
+            return redirect(url_for("inicio") + "#contacto")
+
+        # ==========================================================
+        # FORMULARIO DE COTIZACIÓN
+        # ==========================================================
+
+        if tipo_formulario == "cotizacion":
+
+            nombre = request.form.get("nombre")
+            correo = request.form.get("correo")
+            servicio = request.form.get("servicio")
+            descripcion = request.form.get("descripcion")
+            id_producto = request.form.get("id_producto") or None
+
+            # Buscar si el cliente ya existe
+            cursor.execute(
+                """
+                SELECT id_cliente
+                FROM clientes
+                WHERE correo = %s
+                LIMIT 1
+                """,
+                (correo,)
+            )
+
+            cliente = cursor.fetchone()
+
+            # Crear cliente si no existe
+            if cliente is None:
+
+                cursor.execute(
+                    """
+                    INSERT INTO clientes
+                    (
+                        nombre,
+                        correo,
+                        estado
+                    )
+                    VALUES (%s, %s, %s)
+                    RETURNING id_cliente
+                    """,
+                    (
+                        nombre,
+                        correo,
+                        "Activo"
+                    )
+                )
+
+                id_cliente = cursor.fetchone()[0]
+
+            else:
+
+                id_cliente = cliente[0]
+
+            # Registrar solicitud
+            cursor.execute(
+                """
+                INSERT INTO solicitudes
+                (
+                    nombre,
+                    correo,
+                    servicio,
+                    descripcion,
+                    id_producto,
+                    id_cliente
+                )
+                VALUES (%s, %s, %s, %s, %s, %s)
+                """,
+                (
+                    nombre,
+                    correo,
+                    servicio,
+                    descripcion,
+                    id_producto,
+                    id_cliente
+                )
+            )
+
+            conexion.commit()
+
+            cursor.close()
+            conexion.close()
+
+            return redirect(url_for("inicio") + "#registro")
+
+        # ==========================================================
+        # FORMULARIO NO RECONOCIDO
+        # ==========================================================
+
+        cursor.close()
+        conexion.close()
+
+        return redirect(url_for("inicio"))
+
     return render_template(
         "index.html",
         empresa=empresa,
-        descripcion_empresa=descripcion_empresa
+        descripcion_empresa=descripcion_empresa,
+        producto_id=producto_id
     )
-
-
 # ============================================================
 # REGISTRO DE USUARIO
 # ============================================================
@@ -203,9 +341,343 @@ def login():
 @login_required
 def dashboard():
 
-    return render_template(
-        "dashboard.html"
+    conexion = obtener_conexion()
+
+    cursor = conexion.cursor(
+        cursor_factory=RealDictCursor
     )
+
+    # ==========================================================
+    # SOLICITUDES DE COTIZACIÓN
+    # ==========================================================
+
+    cursor.execute(
+        """
+        SELECT
+            s.id_solicitud,
+            s.nombre,
+            s.correo,
+            s.servicio,
+            s.descripcion,
+            s.fecha,
+            s.estado,
+            p.nombre AS producto,
+            c.id_cotizacion,
+            c.precio AS precio_cotizacion,
+            c.descripcion AS descripcion_cotizacion,
+            c.fecha AS fecha_cotizacion,
+            c.estado AS estado_cotizacion
+        FROM solicitudes s
+        LEFT JOIN productos p
+            ON s.id_producto = p.id_producto
+        LEFT JOIN cotizaciones c
+            ON s.id_solicitud = c.id_solicitud
+        ORDER BY s.fecha DESC
+        """
+    )
+
+    solicitudes = cursor.fetchall()
+
+    # ==========================================================
+    # MENSAJES DE CONTACTO
+    # ==========================================================
+
+    cursor.execute(
+        """
+        SELECT
+            id_mensaje,
+            nombre,
+            correo,
+            asunto,
+            mensaje,
+            fecha,
+            estado
+        FROM mensajes_contacto
+        ORDER BY fecha DESC
+        """
+    )
+
+    mensajes_contacto = cursor.fetchall()
+
+    cursor.close()
+    conexion.close()
+
+    return render_template(
+        "dashboard.html",
+        solicitudes=solicitudes,
+        mensajes_contacto=mensajes_contacto
+    )
+
+
+@app.route("/cotizacion/<int:id_solicitud>", methods=["POST"])
+@login_required
+def crear_cotizacion(id_solicitud):
+
+    precio = request.form.get("precio")
+    descripcion = request.form.get("descripcion")
+
+    conexion = obtener_conexion()
+
+    cursor = conexion.cursor()
+
+    cursor.execute(
+        """
+        INSERT INTO cotizaciones
+        (id_solicitud, precio, descripcion)
+        VALUES (%s, %s, %s)
+        """,
+        (id_solicitud, precio, descripcion)
+    )
+
+    conexion.commit()
+
+    cursor.close()
+    conexion.close()
+
+    return redirect(url_for("dashboard"))
+
+
+@app.route("/solicitud/<int:id_solicitud>/estado", methods=["POST"])
+@login_required
+def cambiar_estado_solicitud(id_solicitud):
+
+    nuevo_estado = request.form.get("estado")
+
+    estados_permitidos = [
+        "Pendiente",
+        "En revisión",
+        "Cotizada",
+        "Aceptada",
+        "En desarrollo",
+        "Finalizada"
+    ]
+
+    if nuevo_estado not in estados_permitidos:
+        return redirect(url_for("dashboard"))
+
+    conexion = obtener_conexion()
+
+    cursor = conexion.cursor()
+
+    cursor.execute(
+        """
+        UPDATE solicitudes
+        SET estado = %s
+        WHERE id_solicitud = %s
+        """,
+        (nuevo_estado, id_solicitud)
+    )
+
+    conexion.commit()
+
+    cursor.close()
+    conexion.close()
+
+    return redirect(url_for("dashboard"))
+
+
+@app.route("/cotizacion/<int:id_cotizacion>/estado", methods=["POST"])
+@login_required
+def cambiar_estado_cotizacion(id_cotizacion):
+
+    nuevo_estado = request.form.get("estado")
+
+    estados_permitidos = [
+        "Pendiente",
+        "Aceptada",
+        "Rechazada"
+    ]
+
+    if nuevo_estado not in estados_permitidos:
+        return redirect(url_for("dashboard"))
+
+    conexion = obtener_conexion()
+
+    cursor = conexion.cursor()
+
+    cursor.execute(
+        """
+        UPDATE cotizaciones
+        SET estado = %s
+        WHERE id_cotizacion = %s
+        """,
+        (nuevo_estado, id_cotizacion)
+    )
+
+    conexion.commit()
+
+    cursor.close()
+    conexion.close()
+
+    return redirect(url_for("dashboard"))
+
+
+@app.route("/cotizacion/<int:id_cotizacion>/factura", methods=["POST"])
+@login_required
+def crear_factura(id_cotizacion):
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+
+    # Buscar la cotización y la solicitud relacionada
+    cursor.execute(
+        """
+        SELECT
+            c.precio,
+            c.estado,
+            s.id_solicitud,
+            s.id_cliente,
+            s.nombre,
+            s.correo,
+            s.servicio
+        FROM cotizaciones c
+        INNER JOIN solicitudes s
+            ON c.id_solicitud = s.id_solicitud
+        WHERE c.id_cotizacion = %s
+        """,
+        (id_cotizacion,)
+    )
+
+    datos = cursor.fetchone()
+
+    # Si la cotización no existe, volver al panel
+    if datos is None:
+
+        cursor.close()
+        conexion.close()
+
+        return redirect(url_for("dashboard"))
+
+    precio = datos[0]
+    estado_cotizacion = datos[1]
+    id_solicitud = datos[2]
+    id_cliente = datos[3]
+    nombre = datos[4]
+    correo = datos[5]
+    servicio = datos[6]
+
+    # La factura solamente puede generarse
+    # cuando la cotización está aceptada
+    if estado_cotizacion != "Aceptada":
+
+        cursor.close()
+        conexion.close()
+
+        return redirect(url_for("dashboard"))
+
+    # Comprobar si ya existe una factura para esta cotización
+    cursor.execute(
+        """
+        SELECT id_factura
+        FROM facturas
+        WHERE id_cotizacion = %s
+        """,
+        (id_cotizacion,)
+    )
+
+    factura_existente = cursor.fetchone()
+
+    if factura_existente is not None:
+
+        cursor.close()
+        conexion.close()
+
+        return redirect(url_for("facturacion"))
+
+    # Si la solicitud todavía no tiene cliente,
+    # crear el cliente automáticamente
+    if id_cliente is None:
+
+        cursor.execute(
+            """
+            SELECT id_cliente
+            FROM clientes
+            WHERE correo = %s
+            LIMIT 1
+            """,
+            (correo,)
+        )
+
+        cliente_existente = cursor.fetchone()
+
+        if cliente_existente is not None:
+
+            id_cliente = cliente_existente[0]
+
+        else:
+
+            cursor.execute(
+                """
+                INSERT INTO clientes
+                (nombre, correo, estado)
+                VALUES (%s, %s, %s)
+                RETURNING id_cliente
+                """,
+                (
+                    nombre,
+                    correo,
+                    "Activo"
+                )
+            )
+
+            id_cliente = cursor.fetchone()[0]
+
+        # Asociar el cliente con la solicitud
+        cursor.execute(
+            """
+            UPDATE solicitudes
+            SET id_cliente = %s
+            WHERE id_solicitud = %s
+            """,
+            (
+                id_cliente,
+                id_solicitud
+            )
+        )
+
+    # Generar número de factura
+    numero_factura = f"FAC-{id_cotizacion:03d}"
+
+    # Crear factura
+    cursor.execute(
+        """
+        INSERT INTO facturas
+        (
+            numero,
+            id_cliente,
+            servicio,
+            fecha,
+            total,
+            estado,
+            id_cotizacion
+        )
+        VALUES
+        (
+            %s,
+            %s,
+            %s,
+            CURRENT_DATE,
+            %s,
+            %s,
+            %s
+        )
+        """,
+        (
+            numero_factura,
+            id_cliente,
+            servicio,
+            precio,
+            "Pendiente",
+            id_cotizacion
+        )
+    )
+
+    conexion.commit()
+
+    cursor.close()
+    conexion.close()
+
+    return redirect(url_for("facturacion"))
 
 
 # ============================================================
@@ -226,7 +698,6 @@ def logout():
 # ============================================================
 
 @app.route("/productos", methods=["GET", "POST"])
-@login_required
 def productos():
 
     form = ProductoForm()
@@ -522,50 +993,56 @@ def eliminar_producto(id_producto):
 @login_required
 def clientes():
 
-    clientes = [
-        {
-            "nombre": "Amazonía Café",
-            "descripcion": (
-                "Emprendimiento dedicado a la comercialización "
-                "de café y productos derivados."
-            ),
-            "servicio": "Página Web Empresarial",
-            "estado": "Activo"
-        },
-        {
-            "nombre": "Selva Tours",
-            "descripcion": (
-                "Empresa turística interesada en promocionar "
-                "sus servicios mediante una plataforma web."
-            ),
-            "servicio": "Tienda Virtual",
-            "estado": "Activo"
-        },
-        {
-            "nombre": "Puyo Fitness",
-            "descripcion": (
-                "Centro deportivo que requiere soluciones digitales "
-                "para mejorar la gestión de su información."
-            ),
-            "servicio": "Aplicación Web",
-            "estado": "Pendiente"
-        }
-    ]
+    conexion = obtener_conexion()
+
+    cursor = conexion.cursor(
+        cursor_factory=RealDictCursor
+    )
 
     form = ClienteForm()
 
     if form.validate_on_submit():
 
-        nuevo_cliente = {
-            "nombre": form.nombre.data,
-            "descripcion": form.descripcion.data,
-            "servicio": "Página Web Empresarial",
-            "estado": form.estado.data
-        }
+        cursor.execute(
+            """
+            INSERT INTO clientes
+            (
+                nombre,
+                descripcion,
+                estado
+            )
+            VALUES (%s, %s, %s)
+            """,
+            (
+                form.nombre.data,
+                form.descripcion.data,
+                form.estado.data
+            )
+        )
 
-        clientes.append(nuevo_cliente)
+        conexion.commit()
+
+        cursor.close()
+        conexion.close()
 
         return redirect(url_for("clientes"))
+
+    cursor.execute(
+        """
+        SELECT
+            id_cliente,
+            nombre,
+            descripcion,
+            estado
+        FROM clientes
+        ORDER BY id_cliente
+        """
+    )
+
+    clientes = cursor.fetchall()
+
+    cursor.close()
+    conexion.close()
 
     return render_template(
         "clientes.html",
@@ -582,50 +1059,56 @@ def clientes():
 @login_required
 def proveedores():
 
-    proveedores = [
-        {
-            "nombre": "Proveedor de Hosting",
-            "descripcion": (
-                "Proveedor de servicios de alojamiento para "
-                "los sitios web desarrollados por TecnoWeb."
-            ),
-            "tipo": "Hosting",
-            "estado": "Disponible"
-        },
-        {
-            "nombre": "Proveedor de Dominios",
-            "descripcion": (
-                "Proveedor encargado del registro y administración "
-                "de nombres de dominio."
-            ),
-            "tipo": "Dominios",
-            "estado": "Disponible"
-        },
-        {
-            "nombre": "Proveedor de Equipos Tecnológicos",
-            "descripcion": (
-                "Proveedor de equipos y componentes necesarios "
-                "para las actividades de desarrollo."
-            ),
-            "tipo": "Equipamiento",
-            "estado": "Pendiente"
-        }
-    ]
+    conexion = obtener_conexion()
+
+    cursor = conexion.cursor(
+        cursor_factory=RealDictCursor
+    )
 
     form = ProveedorForm()
 
     if form.validate_on_submit():
 
-        nuevo_proveedor = {
-            "nombre": form.nombre.data,
-            "descripcion": form.descripcion.data,
-            "tipo": "Hosting",
-            "estado": form.estado.data
-        }
+        cursor.execute(
+            """
+            INSERT INTO proveedores
+            (
+                nombre,
+                descripcion,
+                estado
+            )
+            VALUES (%s, %s, %s)
+            """,
+            (
+                form.nombre.data,
+                form.descripcion.data,
+                form.estado.data
+            )
+        )
 
-        proveedores.append(nuevo_proveedor)
+        conexion.commit()
+
+        cursor.close()
+        conexion.close()
 
         return redirect(url_for("proveedores"))
+
+    cursor.execute(
+        """
+        SELECT
+            id_proveedor,
+            nombre,
+            descripcion,
+            estado
+        FROM proveedores
+        ORDER BY id_proveedor
+        """
+    )
+
+    proveedores = cursor.fetchall()
+
+    cursor.close()
+    conexion.close()
 
     return render_template(
         "proveedores.html",
@@ -638,58 +1121,46 @@ def proveedores():
 # FACTURACIÓN
 # ============================================================
 
-@app.route("/facturacion", methods=["GET", "POST"])
+@app.route("/facturacion", methods=["GET"])
 @login_required
 def facturacion():
 
-    facturas = [
-        {
-            "numero": "FAC-001",
-            "cliente": "Amazonía Café",
-            "servicio": "Página Web Empresarial",
-            "fecha": "10/08/2026",
-            "total": "$150.00",
-            "estado": "Pagada"
-        },
-        {
-            "numero": "FAC-002",
-            "cliente": "Selva Tours",
-            "servicio": "Tienda Virtual",
-            "fecha": "11/08/2026",
-            "total": "$280.00",
-            "estado": "Pendiente"
-        },
-        {
-            "numero": "FAC-003",
-            "cliente": "Puyo Fitness",
-            "servicio": "Diseño de Interfaces",
-            "fecha": "12/08/2026",
-            "total": "$95.00",
-            "estado": "Pagada"
-        }
-    ]
+    conexion = obtener_conexion()
 
-    form = FacturacionForm()
+    cursor = conexion.cursor(
+        cursor_factory=RealDictCursor
+    )
 
-    if form.validate_on_submit():
+    cursor.execute(
+        """
+        SELECT
+            f.id_factura,
+            f.numero,
+            c.nombre AS cliente,
+            f.servicio,
+            f.fecha,
+            f.total,
+            f.estado,
+            f.id_cotizacion,
+            co.precio AS precio_cotizacion,
+            co.estado AS estado_cotizacion
+        FROM facturas f
+        LEFT JOIN clientes c
+            ON f.id_cliente = c.id_cliente
+        LEFT JOIN cotizaciones co
+            ON f.id_cotizacion = co.id_cotizacion
+        ORDER BY f.id_factura ASC
+        """
+    )
 
-        nueva_factura = {
-            "numero": form.numero.data,
-            "cliente": form.cliente.data,
-            "servicio": form.servicio.data,
-            "fecha": form.fecha.data.strftime("%d/%m/%Y"),
-            "total": f"${form.total.data:.2f}",
-            "estado": form.estado.data
-        }
+    facturas = cursor.fetchall()
 
-        facturas.append(nueva_factura)
-
-        return redirect(url_for("facturacion"))
+    cursor.close()
+    conexion.close()
 
     return render_template(
         "facturacion.html",
-        facturas=facturas,
-        form=form
+        facturas=facturas
     )
 
 
