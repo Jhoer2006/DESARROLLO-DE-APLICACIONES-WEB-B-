@@ -8,70 +8,140 @@ Proveedores - TecnoWeb
 
 <section class="mt-4">
 
+    <!-- ========================= -->
+    <!-- ENCABEZADO -->
+    <!-- ========================= -->
+
     <div class="text-center mb-4">
 
         <h2>Proveedores</h2>
 
         <p>
-            Proveedores que apoyan a TecnoWeb con recursos y
-            servicios necesarios para el desarrollo de soluciones web.
+            Gestión de los proveedores registrados en TecnoWeb.
         </p>
 
     </div>
 
 
+    <!-- ========================= -->
+    <!-- MENSAJES -->
+    <!-- ========================= -->
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+
+        {% if mensajes %}
+
+            {% for categoria, mensaje in mensajes %}
+
+                <div
+                    class="alert alert-{{ categoria }} alert-dismissible fade show"
+                    role="alert">
+
+                    {{ mensaje }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Cerrar">
+                    </button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- ========================= -->
     <!-- LISTA DE PROVEEDORES -->
+    <!-- ========================= -->
 
     <div class="row">
 
-        {% for proveedor in proveedores %}
+        {% if proveedores %}
 
-        <div class="col-md-6 col-lg-4 mb-4">
+            {% for proveedor in proveedores %}
 
-            <div class="card h-100 shadow-sm">
+            <div class="col-md-6 col-lg-4 mb-4">
 
-                <div class="card-body d-flex flex-column">
+                <div class="card h-100 shadow-sm">
 
-                    <h5 class="card-title">
-                        {{ proveedor.nombre }}
-                    </h5>
+                    <div class="card-body">
 
-                    <p class="card-text">
-                        {{ proveedor.descripcion }}
-                    </p>
+                        <h5 class="card-title">
+                            {{ proveedor.nombre }}
+                        </h5>
 
-                    <p class="mb-2">
+                        <hr>
 
-                        <strong>Tipo:</strong>
-                        {{ proveedor.tipo }}
+                        <p class="card-text">
 
-                    </p>
+                            <strong>Descripción:</strong>
 
+                            <br>
 
-                    {% if proveedor.estado == "Disponible" %}
+                            {% if proveedor.descripcion %}
 
-                        <span class="badge bg-success mb-3">
-                            Disponible
-                        </span>
+                                {{ proveedor.descripcion }}
 
-                    {% else %}
+                            {% else %}
 
-                        <span class="badge bg-warning text-dark mb-3">
-                            Pendiente
-                        </span>
+                                Sin descripción registrada.
 
-                    {% endif %}
+                            {% endif %}
+
+                        </p>
 
 
-                    <div class="mt-auto">
+                        <p class="mb-0">
 
-                        <a
-                            href="{{ url_for('inicio') }}#contacto"
-                            class="btn btn-success w-100">
+                            <strong>Estado:</strong>
 
-                            Ver información
+                        </p>
 
-                        </a>
+
+                        {% if proveedor.estado == "Activo" %}
+
+                            <span class="badge bg-success">
+                                Activo
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-warning text-dark">
+                                {{ proveedor.estado }}
+                            </span>
+
+                        {% endif %}
+
+
+                        <!-- ========================= -->
+                        <!-- ELIMINAR PROVEEDOR -->
+                        <!-- ========================= -->
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'eliminar_proveedor',
+                                id_proveedor=proveedor.id_proveedor
+                            ) }}"
+                            onsubmit="return confirm(
+                                '¿Está seguro de eliminar este proveedor?'
+                            );"
+                            class="mt-3">
+
+                            <button
+                                type="submit"
+                                class="btn btn-danger w-100">
+
+                                Eliminar proveedor
+
+                            </button>
+
+                        </form>
 
                     </div>
 
@@ -79,14 +149,28 @@ Proveedores - TecnoWeb
 
             </div>
 
-        </div>
+            {% endfor %}
 
-        {% endfor %}
+        {% else %}
+
+            <div class="col-12">
+
+                <div class="alert alert-info">
+
+                    No existen proveedores registrados.
+
+                </div>
+
+            </div>
+
+        {% endif %}
 
     </div>
 
 
-    <!-- FORMULARIO WTForms -->
+    <!-- ========================= -->
+    <!-- FORMULARIO -->
+    <!-- ========================= -->
 
     <section class="mt-5">
 
@@ -112,7 +196,9 @@ Proveedores - TecnoWeb
 
                             <div class="mb-3">
 
-                                {{ form.nombre.label(class="form-label") }}
+                                {{ form.nombre.label(
+                                    class="form-label"
+                                ) }}
 
                                 {{ form.nombre(
                                     class="form-control",
@@ -122,9 +208,9 @@ Proveedores - TecnoWeb
 
                                 {% for error in form.nombre.errors %}
 
-                                <div class="text-danger mt-1">
-                                    {{ error }}
-                                </div>
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
 
                                 {% endfor %}
 
@@ -135,7 +221,9 @@ Proveedores - TecnoWeb
 
                             <div class="mb-3">
 
-                                {{ form.descripcion.label(class="form-label") }}
+                                {{ form.descripcion.label(
+                                    class="form-label"
+                                ) }}
 
                                 {{ form.descripcion(
                                     class="form-control",
@@ -146,9 +234,9 @@ Proveedores - TecnoWeb
 
                                 {% for error in form.descripcion.errors %}
 
-                                <div class="text-danger mt-1">
-                                    {{ error }}
-                                </div>
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
 
                                 {% endfor %}
 
@@ -159,7 +247,9 @@ Proveedores - TecnoWeb
 
                             <div class="mb-3">
 
-                                {{ form.estado.label(class="form-label") }}
+                                {{ form.estado.label(
+                                    class="form-label"
+                                ) }}
 
                                 {{ form.estado(
                                     class="form-select"
@@ -168,9 +258,9 @@ Proveedores - TecnoWeb
 
                                 {% for error in form.estado.errors %}
 
-                                <div class="text-danger mt-1">
-                                    {{ error }}
-                                </div>
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
 
                                 {% endfor %}
 
@@ -186,7 +276,6 @@ Proveedores - TecnoWeb
                                 ) }}
 
                             </div>
-
 
                         </form>
 

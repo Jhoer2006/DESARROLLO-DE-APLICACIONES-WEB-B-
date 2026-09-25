@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 from forms import ProductoForm, ClienteForm, ProveedorForm, FacturacionForm
 from conexion.conexion import obtener_conexion
 from psycopg2.extras import RealDictCursor
+from psycopg2 import IntegrityError
 
 from flask_login import (
     LoginManager,
@@ -69,9 +70,46 @@ def inicio():
 
     producto_id = request.args.get("producto")
 
+    producto_seleccionado = None
+
     descripcion_empresa = (
         "Desarrollo y Soluciones Web para negocios y emprendimientos."
     )
+
+    # --------------------------------------------------------
+    # PRODUCTO SELECCIONADO DESDE EL CATÁLOGO
+    # --------------------------------------------------------
+
+    if producto_id:
+
+        conexion = obtener_conexion()
+
+        cursor = conexion.cursor(
+            cursor_factory=RealDictCursor
+        )
+
+        cursor.execute(
+            """
+            SELECT
+                id_producto,
+                nombre,
+                descripcion,
+                categoria,
+                precio
+            FROM productos
+            WHERE id_producto = %s
+            """,
+            (producto_id,)
+        )
+
+        producto_seleccionado = cursor.fetchone()
+
+        cursor.close()
+        conexion.close()
+
+    # --------------------------------------------------------
+    # PROCESAR FORMULARIOS
+    # --------------------------------------------------------
 
     if request.method == "POST":
 
@@ -80,9 +118,9 @@ def inicio():
         conexion = obtener_conexion()
         cursor = conexion.cursor()
 
-        # ==========================================================
+        # ----------------------------------------------------
         # FORMULARIO DE CONTACTO
-        # ==========================================================
+        # ----------------------------------------------------
 
         if tipo_formulario == "contacto":
 
@@ -111,16 +149,22 @@ def inicio():
             )
 
             conexion.commit()
-            flash("Mensaje enviado con éxito.", "success")
+
+            flash(
+                "Mensaje enviado con éxito.",
+                "success"
+            )
 
             cursor.close()
             conexion.close()
 
-            return redirect(url_for("inicio") + "#contacto")
+            return redirect(
+                url_for("inicio") + "#contacto"
+            )
 
-        # ==========================================================
+        # ----------------------------------------------------
         # FORMULARIO DE COTIZACIÓN
-        # ==========================================================
+        # ----------------------------------------------------
 
         if tipo_formulario == "cotizacion":
 
@@ -128,9 +172,14 @@ def inicio():
             correo = request.form.get("correo")
             servicio = request.form.get("servicio")
             descripcion = request.form.get("descripcion")
-            id_producto = request.form.get("id_producto") or None
 
-            # Buscar si el cliente ya existe
+            id_producto = (
+                request.form.get("id_producto")
+                or None
+            )
+
+            # Buscar cliente por correo
+
             cursor.execute(
                 """
                 SELECT id_cliente
@@ -144,6 +193,7 @@ def inicio():
             cliente = cursor.fetchone()
 
             # Crear cliente si no existe
+
             if cliente is None:
 
                 cursor.execute(
@@ -170,7 +220,8 @@ def inicio():
 
                 id_cliente = cliente[0]
 
-            # Registrar solicitud
+            # Crear solicitud
+
             cursor.execute(
                 """
                 INSERT INTO solicitudes
@@ -199,23 +250,30 @@ def inicio():
             cursor.close()
             conexion.close()
 
-            return redirect(url_for("inicio") + "#registro")
-
-        # ==========================================================
-        # FORMULARIO NO RECONOCIDO
-        # ==========================================================
+            return redirect(
+                url_for("inicio") + "#registro"
+            )
 
         cursor.close()
         conexion.close()
 
-        return redirect(url_for("inicio"))
+        return redirect(
+            url_for("inicio")
+        )
+
+    # --------------------------------------------------------
+    # MOSTRAR PÁGINA PRINCIPAL
+    # --------------------------------------------------------
 
     return render_template(
         "index.html",
         empresa=empresa,
         descripcion_empresa=descripcion_empresa,
-        producto_id=producto_id
+        producto_id=producto_id,
+        producto_seleccionado=producto_seleccionado
     )
+
+
 # ============================================================
 # REGISTRO DE USUARIO
 # ============================================================
@@ -372,7 +430,7 @@ def dashboard():
             ON s.id_producto = p.id_producto
         LEFT JOIN cotizaciones c
             ON s.id_solicitud = c.id_solicitud
-        ORDER BY s.fecha DESC
+        ORDER BY s.id_solicitud ASC
         """
     )
 
@@ -1032,6 +1090,9 @@ def clientes():
         SELECT
             id_cliente,
             nombre,
+            cedula,
+            telefono,
+            correo,
             descripcion,
             estado
         FROM clientes
@@ -1115,6 +1176,40 @@ def proveedores():
         proveedores=proveedores,
         form=form
     )
+@app.route("/proveedor/<int:id_proveedor>/eliminar", methods=["POST"])
+@login_required
+def eliminar_proveedor(id_proveedor):
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+
+    try:
+
+        cursor.execute(
+            """
+            DELETE FROM proveedores
+            WHERE id_proveedor = %s
+            """,
+            (id_proveedor,)
+        )
+
+        conexion.commit()
+
+    except IntegrityError:
+
+        conexion.rollback()
+
+        flash(
+            "No se puede eliminar este proveedor porque tiene productos asociados.",
+            "danger"
+        )
+
+    finally:
+
+        cursor.close()
+        conexion.close()
+
+    return redirect(url_for("proveedores"))
 
 
 # ============================================================
@@ -1149,7 +1244,7 @@ def facturacion():
             ON f.id_cliente = c.id_cliente
         LEFT JOIN cotizaciones co
             ON f.id_cotizacion = co.id_cotizacion
-        ORDER BY f.id_factura ASC
+       ORDER BY f.numero ASC
         """
     )
 

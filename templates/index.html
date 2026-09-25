@@ -307,36 +307,52 @@ TecnoWeb - Desarrollo y Soluciones Web
                             </label>
 
                             <select
-                                id="servicio"
-                                name="servicio"
-                                class="form-select"
-                                required>
+    id="servicio"
+    name="servicio"
+    class="form-select"
+    required>
 
-                                <option value="">
-                                    Seleccione un servicio
-                                </option>
+    <option value="">
+        Seleccione un servicio
+    </option>
 
-                                <option value="Desarrollo Web">
-                                    Desarrollo Web
-                                </option>
+    <option
+        value="Desarrollo Web"
+        {% if producto_seleccionado and producto_seleccionado.categoria == "Desarrollo" %}
+            selected
+        {% endif %}>
+        Desarrollo Web
+    </option>
 
-                                <option value="Tienda Virtual">
-                                    Tienda Virtual
-                                </option>
+    <option
+        value="Tienda Virtual"
+        {% if producto_seleccionado and producto_seleccionado.categoria == "Comercio Electrónico" %}
+            selected
+        {% endif %}>
+        Tienda Virtual
+    </option>
 
-                                <option value="Aplicación Web">
-                                    Aplicación Web
-                                </option>
+    <option
+        value="Aplicación Web"
+        {% if producto_seleccionado and producto_seleccionado.categoria == "Aplicaciones" %}
+            selected
+        {% endif %}>
+        Aplicación Web
+    </option>
 
-                                <option value="Diseño de Interfaces">
-                                    Diseño de Interfaces
-                                </option>
+    <option
+        value="Diseño de Interfaces"
+        {% if producto_seleccionado and producto_seleccionado.categoria == "Diseño" %}
+            selected
+        {% endif %}>
+        Diseño de Interfaces
+    </option>
 
-                                <option value="Mantenimiento Web">
-                                    Mantenimiento Web
-                                </option>
+    <option value="Mantenimiento Web">
+        Mantenimiento Web
+    </option>
 
-                            </select>
+</select>
 
                         </div>
 
@@ -354,12 +370,12 @@ TecnoWeb - Desarrollo y Soluciones Web
                             </label>
 
                             <textarea
-                                id="descripcion"
-                                name="descripcion"
-                                class="form-control"
-                                rows="5"
-                                placeholder="Describa brevemente lo que necesita para su proyecto."
-                                required></textarea>
+    id="descripcion"
+    name="descripcion"
+    class="form-control"
+    rows="5"
+    placeholder="Describa brevemente lo que necesita para su proyecto."
+    required>{% if producto_seleccionado %}{{ producto_seleccionado.descripcion }}{% endif %}</textarea>
 
                         </div>
 
@@ -395,16 +411,20 @@ TecnoWeb - Desarrollo y Soluciones Web
 <!-- VIDEO -->
 <!-- ========================= -->
 
-<section>
+<section id="video-desarrollo">
 
-    <h2 class="mt-5">
-        Conozca más sobre Desarrollo Web
-    </h2>
+    <div class="video-contenido">
 
+        <h2>
+            Conozca más sobre Desarrollo Web
+        </h2>
 
-    <div class="row">
+        <p>
+            Conozca los conceptos básicos del desarrollo web y las
+            tecnologías utilizadas para crear sitios modernos.
+        </p>
 
-        <div class="col-12 col-lg-8 mx-auto">
+        <div class="video-contenedor">
 
             <iframe
                 src="https://www.youtube.com/embed/mNbnV3aN3KA?si=Ah7XyYbFl_kyigi9"

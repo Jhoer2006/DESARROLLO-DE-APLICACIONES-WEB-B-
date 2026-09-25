@@ -61,7 +61,7 @@ Facturación - TecnoWeb
                     </td>
 
                     <td>
-                        {{ factura.fecha.strftime('%d/%m/%Y %H:%M') if factura.fecha else 'No disponible' }}
+                        {{ factura.fecha.strftime('%d/%m/%Y') }}
                     </td>
 
                     <td>
@@ -74,35 +74,17 @@ Facturación - TecnoWeb
 
                         {% if factura.estado == "Pagada" %}
 
-                            <span class="badge bg-success">
+                            <span class="badge bg-success px-3 py-2">
                                 Pagada
-                            </span>
-
-                        {% elif factura.estado == "Pendiente" %}
-
-                            <span class="badge bg-warning text-dark">
-                                Pendiente
                             </span>
 
                         {% else %}
 
-                            <span class="badge bg-secondary">
-                                {{ factura.estado }}
+                            <span class="badge bg-warning text-dark px-3 py-2">
+                                Pendiente
                             </span>
 
                         {% endif %}
-
-                    </td>
-
-                </tr>
-
-                {% else %}
-
-                <tr>
-
-                    <td colspan="6" class="text-center">
-
-                        No existen facturas registradas.
 
                     </td>
 
@@ -127,7 +109,6 @@ Facturación - TecnoWeb
         almacenados en la base de datos de TecnoWeb.
 
     </div>
-
 
 </section>
 

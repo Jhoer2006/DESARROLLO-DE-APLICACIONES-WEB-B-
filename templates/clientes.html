@@ -8,70 +8,82 @@ Clientes - TecnoWeb
 
 <section class="mt-4">
 
+    <!-- ========================= -->
+    <!-- ENCABEZADO -->
+    <!-- ========================= -->
+
     <div class="text-center mb-4">
 
         <h2>Clientes</h2>
 
         <p>
-            Conozca algunos de los clientes que confían en
-            TecnoWeb para desarrollar sus soluciones digitales.
+            Gestión de los clientes registrados en TecnoWeb.
         </p>
 
     </div>
 
 
+    <!-- ========================= -->
     <!-- LISTA DE CLIENTES -->
+    <!-- ========================= -->
 
     <div class="row">
 
-        {% for cliente in clientes %}
+        {% if clientes %}
 
-        <div class="col-md-6 col-lg-4 mb-4">
+            {% for cliente in clientes %}
 
-            <div class="card h-100 shadow-sm">
+            <div class="col-md-6 col-lg-4 mb-4">
 
-                <div class="card-body d-flex flex-column">
+                <div class="card h-100 shadow-sm">
 
-                    <h5 class="card-title">
-                        {{ cliente.nombre }}
-                    </h5>
+                    <div class="card-body">
 
-                    <p class="card-text">
-                        {{ cliente.descripcion }}
-                    </p>
+                        <h5 class="card-title">
+                            {{ cliente.nombre }}
+                        </h5>
 
-                    <p class="mb-2">
+                        <hr>
 
-                        <strong>Servicio:</strong>
-                        {{ cliente.servicio }}
+                        <p class="card-text">
 
-                    </p>
+                            <strong>Descripción:</strong>
 
+                            <br>
 
-                    {% if cliente.estado == "Activo" %}
+                            {% if cliente.descripcion %}
 
-                        <span class="badge bg-success mb-3">
-                            Activo
-                        </span>
+                                {{ cliente.descripcion }}
 
-                    {% else %}
+                            {% else %}
 
-                        <span class="badge bg-warning text-dark mb-3">
-                            Pendiente
-                        </span>
+                                Sin descripción registrada.
 
-                    {% endif %}
+                            {% endif %}
+
+                        </p>
 
 
-                    <div class="mt-auto">
+                        <p class="mb-0">
 
-                        <a
-                            href="{{ url_for('inicio') }}#contacto"
-                            class="btn btn-success w-100">
+                            <strong>Estado:</strong>
 
-                            Ver información
+                        </p>
 
-                        </a>
+
+                        {% if cliente.estado == "Activo" %}
+
+                            <span class="badge bg-success">
+                                Activo
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-warning text-dark">
+                                {{ cliente.estado }}
+                            </span>
+
+                        {% endif %}
 
                     </div>
 
@@ -79,14 +91,28 @@ Clientes - TecnoWeb
 
             </div>
 
-        </div>
+            {% endfor %}
 
-        {% endfor %}
+        {% else %}
+
+            <div class="col-12">
+
+                <div class="alert alert-info">
+
+                    No existen clientes registrados.
+
+                </div>
+
+            </div>
+
+        {% endif %}
 
     </div>
 
 
-    <!-- FORMULARIO WTForms -->
+    <!-- ========================= -->
+    <!-- FORMULARIO -->
+    <!-- ========================= -->
 
     <section class="mt-5">
 
@@ -112,7 +138,9 @@ Clientes - TecnoWeb
 
                             <div class="mb-3">
 
-                                {{ form.nombre.label(class="form-label") }}
+                                {{ form.nombre.label(
+                                    class="form-label"
+                                ) }}
 
                                 {{ form.nombre(
                                     class="form-control",
@@ -122,9 +150,9 @@ Clientes - TecnoWeb
 
                                 {% for error in form.nombre.errors %}
 
-                                <div class="text-danger mt-1">
-                                    {{ error }}
-                                </div>
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
 
                                 {% endfor %}
 
@@ -135,7 +163,9 @@ Clientes - TecnoWeb
 
                             <div class="mb-3">
 
-                                {{ form.descripcion.label(class="form-label") }}
+                                {{ form.descripcion.label(
+                                    class="form-label"
+                                ) }}
 
                                 {{ form.descripcion(
                                     class="form-control",
@@ -146,9 +176,9 @@ Clientes - TecnoWeb
 
                                 {% for error in form.descripcion.errors %}
 
-                                <div class="text-danger mt-1">
-                                    {{ error }}
-                                </div>
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
 
                                 {% endfor %}
 
@@ -159,7 +189,9 @@ Clientes - TecnoWeb
 
                             <div class="mb-3">
 
-                                {{ form.estado.label(class="form-label") }}
+                                {{ form.estado.label(
+                                    class="form-label"
+                                ) }}
 
                                 {{ form.estado(
                                     class="form-select"
@@ -168,9 +200,9 @@ Clientes - TecnoWeb
 
                                 {% for error in form.estado.errors %}
 
-                                <div class="text-danger mt-1">
-                                    {{ error }}
-                                </div>
+                                    <div class="text-danger mt-1">
+                                        {{ error }}
+                                    </div>
 
                                 {% endfor %}
 
@@ -186,7 +218,6 @@ Clientes - TecnoWeb
                                 ) }}
 
                             </div>
-
 
                         </form>
 

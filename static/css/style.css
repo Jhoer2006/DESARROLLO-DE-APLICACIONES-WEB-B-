@@ -1,157 +1,583 @@
-body{
-background-color: #f8f9fa;
-font-family: Arial, sans-serif;
+/* =========================================================
+   TECNOWEB - ESTILOS GENERALES
+   ========================================================= */
+
+:root {
+    --naranja-principal: #f57c00;
+    --naranja-oscuro: #d96500;
+    --naranja-claro: #fff3e6;
+    --fondo: #f4f6f8;
+    --blanco: #ffffff;
+    --texto: #333333;
+    --texto-suave: #666666;
+    --borde: #e6e6e6;
 }
 
-header{
-background: linear-gradient(90deg, #fd7e14, #ffb347);
-color: white;
-text-align: center;
-padding: 30px;
+
+/* =========================================================
+   CONFIGURACIÓN GENERAL
+   ========================================================= */
+
+html {
+    scroll-behavior: smooth;
 }
 
-.navbar{
-background-color: #cc6600 !important;
-box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6;
 }
 
-.navbar-brand,
-.nav-link{
-color: white !important;
-font-weight: bold;
+
+/* =========================================================
+   ENCABEZADO
+   ========================================================= */
+
+header {
+    background: linear-gradient(
+        135deg,
+        #f57c00,
+        #ffad42
+    );
+
+    color: white;
+    text-align: center;
+
+    padding: 28px 20px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
 }
 
-.nav-link:hover{
-color: #ffe0b2 !important;
+header h1 {
+    margin: 0;
+
+    font-size: 2rem;
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
 }
 
-section{
-margin-top: 30px;
+header p {
+    margin: 4px 0 0;
+
+    font-size: 0.95rem;
+    font-weight: 500;
 }
 
-h2{
-color: #e66a00;
-margin-bottom: 20px;
+
+/* =========================================================
+   BARRA DE NAVEGACIÓN
+   ========================================================= */
+
+.navbar.bg-success {
+    background: #d96500 !important;
 }
 
-.card{
-transition: transform 0.3s;
-box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-border: none;
+.navbar {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
 }
 
-.card:hover{
-transform: translateY(-5px);
+.navbar-brand {
+    font-weight: 700;
 }
 
-.card-title{
-color: #e66a00;
+.navbar .nav-link {
+    font-weight: 600;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+
+    border-radius: 6px;
+
+    margin-left: 3px;
+    margin-right: 3px;
 }
 
-aside{
-background-color: #fff3e0;
-padding: 20px;
-border-radius: 10px;
-margin-top: 20px;
-box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+.navbar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
 }
 
-footer{
-background-color: #212529;
-color: white;
-text-align: center;
-padding: 15px;
-margin-top: 30px;
+
+/* =========================================================
+   CONTENIDO PRINCIPAL
+   ========================================================= */
+
+main.container {
+    max-width: 1140px;
+    padding-top: 30px;
+    padding-bottom: 40px;
 }
 
-img{
-border-radius: 10px;
+
+/* =========================================================
+   SECCIONES
+   ========================================================= */
+
+main > section {
+    background: var(--blanco);
+
+    border: 1px solid var(--borde);
+
+    border-radius: 14px;
+
+    padding: 35px;
+
+    margin-bottom: 30px;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.06);
 }
 
-iframe{
-width: 100%;
-min-height: 315px;
-border-radius: 10px;
+
+/* =========================================================
+   INICIO
+   ========================================================= */
+
+#inicio {
+    padding: 40px;
 }
 
-.btn-success{
-background-color: #fd7e14 !important;
-border-color: #fd7e14 !important;
+#inicio h2 {
+    color: var(--naranja-principal);
+
+    font-weight: 700;
+
+    margin-bottom: 20px;
 }
 
-.btn-success:hover{
-background-color: #e66a00 !important;
-border-color: #e66a00 !important;
+#inicio p {
+    color: var(--texto);
 }
 
-form{
-background-color: white;
-padding: 20px;
-border-radius: 10px;
-box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+#inicio img {
+    width: 100%;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.12) !important;
 }
 
-.modal-content{
-border-radius: 10px;
+
+/* =========================================================
+   QUIÉNES SOMOS
+   ========================================================= */
+
+#quienes-somos {
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #fff8f1
+        );
 }
 
-#btnAgregar{
-min-width: 170px;
+#quienes-somos h2 {
+    color: var(--naranja-principal);
+
+    font-weight: 700;
+
+    text-align: center;
+
+    margin-bottom: 25px;
 }
 
-.badge.bg-success{
-background-color: #fd7e14 !important;
+#quienes-somos article {
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    background: #ffffff;
+
+    padding: 25px 30px;
+
+    border-left: 5px solid var(--naranja-principal);
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 3px 12px rgba(0, 0, 0, 0.05);
 }
 
-@media(max-width:768px){
-
-header h1{
-    font-size: 1.8rem;
+#quienes-somos p:last-child {
+    margin-bottom: 0;
 }
 
-iframe{
-    min-height: 250px;
+
+/* =========================================================
+   SERVICIOS
+   ========================================================= */
+
+#servicios {
+    background: #ffffff;
 }
 
+#servicios h2 {
+    color: var(--naranja-principal);
+
+    font-weight: 700;
 }
 
-/* Estados de productos */
-.badge.bg-success {
-    background-color: #198754 !important;
-    color: #ffffff !important;
+#servicios .card {
+    border: 1px solid var(--borde);
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-.badge.bg-warning {
-    background-color: #ffc107 !important;
-    color: #212529 !important;
+#servicios .card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.10) !important;
 }
 
-.badge.bg-danger {
-    background-color: #dc3545 !important;
-    color: #ffffff !important;
+#servicios .card-body {
+    padding: 25px;
 }
 
-/* BOTÓN FLOTANTE DE WHATSAPP */
+#servicios .card-title {
+    color: var(--naranja-principal);
+
+    font-weight: 700;
+}
+
+#servicios .card-text {
+    color: var(--texto-suave);
+}
+
+
+/* =========================================================
+   TARJETAS GENERALES
+   ========================================================= */
+
+.card {
+    border-radius: 12px;
+
+    border: 1px solid var(--borde);
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.card-title {
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   BOTONES
+   ========================================================= */
+
+/* Botón principal naranja */
+
+.btn-success {
+    background-color: var(--naranja-principal) !important;
+
+    border-color: var(--naranja-principal) !important;
+
+    color: white !important;
+}
+
+.btn-success:hover {
+    background-color: var(--naranja-oscuro) !important;
+
+    border-color: var(--naranja-oscuro) !important;
+}
+
+
+/* Reemplazar el azul de Bootstrap por naranja */
+
+.btn-primary {
+    background-color: var(--naranja-principal) !important;
+
+    border-color: var(--naranja-principal) !important;
+
+    color: white !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--naranja-oscuro) !important;
+
+    border-color: var(--naranja-oscuro) !important;
+}
+
+
+/* Botón peligro sigue siendo rojo */
+
+.btn-danger {
+    color: white !important;
+}
+
+
+/* =========================================================
+   FORMULARIOS
+   ========================================================= */
+
+form {
+    background: #ffffff;
+}
+
+.form-control,
+.form-select {
+    border: 1px solid #d8d8d8;
+
+    border-radius: 8px;
+
+    padding: 10px 12px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--naranja-principal);
+
+    box-shadow:
+        0 0 0 0.2rem rgba(245, 124, 0, 0.15);
+}
+
+.form-label {
+    font-weight: 600;
+
+    color: #444444;
+}
+
+
+/* =========================================================
+   ALERTAS
+   ========================================================= */
+
+.alert {
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   VIDEO
+   ========================================================= */
+
+iframe {
+    max-width: 100%;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.10);
+}
+
+
+/* =========================================================
+   IMÁGENES
+   ========================================================= */
+
+img {
+    max-width: 100%;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+    background: #252525;
+
+    color: #ffffff;
+
+    padding: 30px 20px;
+
+    margin-top: 0;
+}
+
+footer p {
+    margin-bottom: 5px;
+}
+
+footer small {
+    color: #cccccc;
+}
+
+
+/* =========================================================
+   WHATSAPP
+   ========================================================= */
 
 .whatsapp-float {
     position: fixed;
-    bottom: 25px;
-    right: 25px;
-    width: 60px;
-    height: 60px;
-    background-color: #25D366;
+
+    width: 58px;
+    height: 58px;
+
+    bottom: 20px;
+    right: 20px;
+
+    background-color: #25d366;
+
+    color: white;
+
     border-radius: 50%;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
+
+    font-size: 30px;
+
     text-decoration: none;
-    color: white;
-    font-size: 0;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.25);
+
     z-index: 9999;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .whatsapp-float:hover {
-    transform: scale(1.1);
+    color: white;
+
+    transform: scale(1.08);
+
+    box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.30);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    header {
+        padding: 22px 15px;
+    }
+
+    header h1 {
+        font-size: 1.7rem;
+    }
+
+    main.container {
+        padding-top: 20px;
+    }
+
+    main > section {
+        padding: 25px 20px;
+
+        border-radius: 10px;
+    }
+
+    #inicio {
+        padding: 25px 20px;
+    }
+
+    #inicio img {
+        margin-top: 25px;
+    }
+
+    #quienes-somos article {
+        padding: 20px;
+    }
+
+    .navbar .nav-link {
+        margin: 2px 0;
+    }
+
+}
+
+/* =========================================================
+   VIDEO - DESARROLLO WEB
+   ========================================================= */
+
+#video-desarrollo {
+    background: linear-gradient(
+        135deg,
+        #fff8f1,
+        #ffffff
+    );
+
+    text-align: center;
+
+    padding: 40px 30px;
+
+    border: 1px solid #f0dfcf;
+
+    border-radius: 14px;
+
+    margin-bottom: 30px;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+#video-desarrollo h2 {
+    color: #f57c00;
+
+    font-weight: 700;
+
+    margin-bottom: 10px;
+}
+
+#video-desarrollo p {
+    color: #666666;
+
+    max-width: 700px;
+
+    margin: 0 auto 25px;
+}
+
+.video-contenedor {
+    max-width: 850px;
+
+    margin: 0 auto;
+}
+
+.video-contenedor iframe {
+    display: block;
+
+    width: 100%;
+
+    aspect-ratio: 16 / 9;
+
+    height: auto;
+
+    border: none;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.15);
+}
+
+
+/* =========================================================
+   VIDEO RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    #video-desarrollo {
+        padding: 30px 20px;
+    }
+
+    #video-desarrollo h2 {
+        font-size: 1.6rem;
+    }
+
 }
