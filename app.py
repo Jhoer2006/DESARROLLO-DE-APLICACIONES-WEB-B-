@@ -542,6 +542,85 @@ def eliminar_solicitud(id_solicitud):
 
     try:
 
+        # Obtener el estado de la solicitud y de su cotización
+        cursor.execute(
+            """
+            SELECT
+                s.estado,
+                c.id_cotizacion,
+                c.estado AS estado_cotizacion
+            FROM solicitudes s
+            LEFT JOIN cotizaciones c
+                ON s.id_solicitud = c.id_solicitud
+            WHERE s.id_solicitud = %s
+            """,
+            (id_solicitud,)
+        )
+
+        solicitud = cursor.fetchone()
+
+        if solicitud is None:
+
+            flash(
+                "La solicitud no existe.",
+                "danger"
+            )
+
+            cursor.close()
+            conexion.close()
+
+            return redirect(url_for("dashboard"))
+
+        estado_solicitud = solicitud[0]
+        id_cotizacion = solicitud[1]
+        estado_cotizacion = solicitud[2]
+
+        # No permitir eliminar solicitudes que ya forman
+        # parte de un proceso aceptado o finalizado
+        estados_bloqueados = [
+            "Aceptada",
+            "En desarrollo",
+            "Finalizada"
+        ]
+
+        if estado_solicitud in estados_bloqueados:
+
+            flash(
+                "No se puede eliminar esta solicitud porque ya forma parte del proceso de contratación.",
+                "danger"
+            )
+
+            cursor.close()
+            conexion.close()
+
+            return redirect(url_for("dashboard"))
+
+        # Si la cotización ya fue aceptada, conservar el historial
+        if estado_cotizacion == "Aceptada":
+
+            flash(
+                "No se puede eliminar esta solicitud porque su cotización ya fue aceptada.",
+                "danger"
+            )
+
+            cursor.close()
+            conexion.close()
+
+            return redirect(url_for("dashboard"))
+
+        # Si existe una cotización no aceptada,
+        # eliminar primero la cotización
+        if id_cotizacion is not None:
+
+            cursor.execute(
+                """
+                DELETE FROM cotizaciones
+                WHERE id_cotizacion = %s
+                """,
+                (id_cotizacion,)
+            )
+
+        # Eliminar la solicitud
         cursor.execute(
             """
             DELETE FROM solicitudes

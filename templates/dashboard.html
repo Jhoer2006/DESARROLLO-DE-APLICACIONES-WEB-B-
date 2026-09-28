@@ -567,46 +567,36 @@ Panel principal - TecnoWeb
                                             </form>
 
 
-                                            {% if solicitud.estado_cotizacion == "Aceptada" %}
+{% if solicitud.estado != "Aceptada" %}
+    {% if solicitud.estado != "En desarrollo" %}
+        {% if solicitud.estado != "Finalizada" %}
+            {% if solicitud.estado_cotizacion != "Aceptada" %}
 
-                                                <form
-                                                    method="POST"
-                                                    action="{{ url_for(
-                                                        'crear_factura',
-                                                        id_cotizacion=solicitud.id_cotizacion
-                                                    ) }}"
-                                                    class="mt-3">
+                <form
+                    method="POST"
+                    action="{{ url_for(
+                        'eliminar_solicitud',
+                        id_solicitud=solicitud.id_solicitud
+                    ) }}"
+                    onsubmit="return confirm(
+                        '¿Está seguro de eliminar esta solicitud?'
+                    );"
+                    class="mt-2"
+                >
 
-                                                    <button
-                                                        type="submit"
-                                                        class="btn btn-success w-100">
-                                                        Crear factura
-                                                    </button>
+                    <button
+                        type="submit"
+                        class="btn btn-danger w-100"
+                    >
+                        Eliminar solicitud
+                    </button>
 
-                                                </form>
+                </form>
 
-                                               <form
-    method="POST"
-    action="{{ url_for(
-        'eliminar_solicitud',
-        id_solicitud=solicitud.id_solicitud
-    ) }}"
-    onsubmit="return confirm(
-        '¿Está seguro de eliminar esta solicitud?'
-    );"
-    class="mt-2">
-
-    <button
-        type="submit"
-        class="btn btn-danger w-100">
-
-        Eliminar solicitud
-
-    </button>
-
-</form> 
-
-                                            {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endif %}
 
                                         </div>
 
@@ -707,7 +697,6 @@ Panel principal - TecnoWeb
         {% endif %}
 
     </section>
-
 
     <!-- ===================================================== -->
     <!-- MENSAJES DE CONTACTO -->
