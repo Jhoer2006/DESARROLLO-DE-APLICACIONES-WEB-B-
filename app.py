@@ -533,6 +533,46 @@ def cambiar_estado_solicitud(id_solicitud):
 
     return redirect(url_for("dashboard"))
 
+@app.route("/solicitud/<int:id_solicitud>/eliminar", methods=["POST"])
+@login_required
+def eliminar_solicitud(id_solicitud):
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+
+    try:
+
+        cursor.execute(
+            """
+            DELETE FROM solicitudes
+            WHERE id_solicitud = %s
+            """,
+            (id_solicitud,)
+        )
+
+        conexion.commit()
+
+        flash(
+            "Solicitud eliminada correctamente.",
+            "success"
+        )
+
+    except IntegrityError:
+
+        conexion.rollback()
+
+        flash(
+            "No se puede eliminar esta solicitud porque tiene registros asociados.",
+            "danger"
+        )
+
+    finally:
+
+        cursor.close()
+        conexion.close()
+
+    return redirect(url_for("dashboard"))
+
 
 @app.route("/cotizacion/<int:id_cotizacion>/estado", methods=["POST"])
 @login_required
@@ -1110,6 +1150,121 @@ def clientes():
         clientes=clientes,
         form=form
     )
+
+
+@app.route("/cliente/<int:id_cliente>/editar", methods=["GET", "POST"])
+@login_required
+def editar_cliente(id_cliente):
+
+    conexion = obtener_conexion()
+
+    cursor = conexion.cursor(
+        cursor_factory=RealDictCursor
+    )
+
+    cursor.execute(
+        """
+        SELECT
+            id_cliente,
+            nombre,
+            descripcion,
+            estado
+        FROM clientes
+        WHERE id_cliente = %s
+        """,
+        (id_cliente,)
+    )
+
+    cliente = cursor.fetchone()
+
+    if cliente is None:
+        cursor.close()
+        conexion.close()
+        return redirect(url_for("clientes"))
+
+    form = ClienteForm()
+
+    if form.validate_on_submit():
+
+        cursor.execute(
+            """
+            UPDATE clientes
+            SET
+                nombre = %s,
+                descripcion = %s,
+                estado = %s
+            WHERE id_cliente = %s
+            """,
+            (
+                form.nombre.data,
+                form.descripcion.data,
+                form.estado.data,
+                id_cliente
+            )
+        )
+
+        conexion.commit()
+
+        cursor.close()
+        conexion.close()
+
+        return redirect(url_for("clientes"))
+
+    if request.method == "GET":
+        form.nombre.data = cliente["nombre"]
+        form.descripcion.data = cliente["descripcion"]
+        form.estado.data = cliente["estado"]
+
+    cursor.close()
+    conexion.close()
+
+    return render_template(
+        "editar_cliente.html",
+        form=form,
+        cliente=cliente
+    )
+
+
+@app.route("/cliente/<int:id_cliente>/eliminar", methods=["POST"])
+@login_required
+def eliminar_cliente(id_cliente):
+
+    conexion = obtener_conexion()
+
+    cursor = conexion.cursor()
+
+    try:
+
+        cursor.execute(
+            """
+            DELETE FROM clientes
+            WHERE id_cliente = %s
+            """,
+            (id_cliente,)
+        )
+
+        conexion.commit()
+
+        flash(
+            "Cliente eliminado correctamente.",
+            "success"
+        )
+
+    except IntegrityError:
+
+        conexion.rollback()
+
+        flash(
+            "No se puede eliminar este cliente porque tiene registros asociados.",
+            "danger"
+        )
+
+    finally:
+
+        cursor.close()
+        conexion.close()
+
+    return redirect(url_for("clientes"))
 
 
 # ============================================================
