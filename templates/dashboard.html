@@ -275,408 +275,427 @@ Panel principal - TecnoWeb
     </section>
 
 
-    <!-- ===================================================== -->
-    <!-- SOLICITUDES DE COTIZACIÓN -->
-    <!-- ===================================================== -->
+<!-- ===================================================== -->
+<!-- SOLICITUDES DE COTIZACIÓN -->
+<!-- ===================================================== -->
 
-    <section class="dashboard-section">
+<section class="dashboard-section">
 
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
 
-            <div>
-                <h2 class="dashboard-section-title">
-                    Solicitudes de cotización
-                </h2>
+        <div>
+            <h2 class="dashboard-section-title">
+                Solicitudes de cotización
+            </h2>
 
-                <p class="text-muted mb-0">
-                    Solicitudes recibidas desde el formulario público.
-                </p>
-            </div>
-
-            <span class="badge bg-warning text-dark contador">
-                {{ solicitudes|length }} solicitud(es)
-            </span>
-
+            <p class="text-muted mb-0">
+                Solicitudes recibidas desde el formulario público.
+            </p>
         </div>
 
+        <span class="badge bg-warning text-dark contador">
+            {{ solicitudes|length }} solicitud(es)
+        </span>
 
-        {% if solicitudes %}
+    </div>
 
-            {% for solicitud in solicitudes %}
 
-            <article class="solicitud-card">
+    {% if solicitudes %}
 
-                <div class="solicitud-header">
+        {% for solicitud in solicitudes %}
 
-                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+        <article class="solicitud-card">
 
-                        <div>
-                            <span class="solicitud-id">
-                                Solicitud #{{ solicitud.id_solicitud }}
+            <div class="solicitud-header">
+
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+
+                    <div>
+                        <span class="solicitud-id">
+                            Solicitud #{{ solicitud.id_solicitud }}
+                        </span>
+
+                        <span class="text-muted ms-md-2">
+                            {{ solicitud.fecha.strftime('%d/%m/%Y %H:%M') }}
+                        </span>
+                    </div>
+
+                    <span class="badge bg-secondary">
+                        {{ solicitud.estado }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="solicitud-body">
+
+                <div class="row g-4">
+
+                    <!-- CLIENTE -->
+
+                    <div class="col-lg-4">
+
+                        <div class="solicitud-columna">
+
+                            <span class="dato-label">
+                                Cliente
                             </span>
 
-                            <span class="text-muted ms-md-2">
-                                {{ solicitud.fecha.strftime('%d/%m/%Y %H:%M') }}
+                            <div class="dato-valor fw-semibold mb-3">
+                                {{ solicitud.nombre }}
+                            </div>
+
+                            <span class="dato-label">
+                                Correo
                             </span>
+
+                            <div class="dato-valor mb-3">
+                                {{ solicitud.correo }}
+                            </div>
+
+                            <span class="dato-label">
+                                Servicio solicitado
+                            </span>
+
+                            <div class="dato-valor fw-semibold mb-3">
+                                {{ solicitud.servicio }}
+                            </div>
+
+                            <span class="dato-label">
+                                Producto relacionado
+                            </span>
+
+                            <div class="dato-valor">
+                                {{ solicitud.producto or "No especificado" }}
+                            </div>
+
                         </div>
 
-                        <span class="badge bg-secondary">
-                            {{ solicitud.estado }}
-                        </span>
+                    </div>
+
+
+                    <!-- DESCRIPCIÓN -->
+
+                    <div class="col-lg-4">
+
+                        <div class="solicitud-columna">
+
+                            <span class="dato-label">
+                                Descripción de la solicitud
+                            </span>
+
+                            <div class="dato-valor">
+                                {{ solicitud.descripcion }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ESTADO -->
+
+                    <div class="col-lg-4">
+
+                        <div class="estado-panel">
+
+                            <h6>
+                                Estado de la solicitud
+                            </h6>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'cambiar_estado_solicitud',
+                                    id_solicitud=solicitud.id_solicitud
+                                ) }}">
+
+                                <select
+                                    name="estado"
+                                    class="form-select estado-select">
+
+                                    <option
+                                        value="Pendiente"
+                                        {% if solicitud.estado == "Pendiente" %}selected{% endif %}>
+                                        Pendiente
+                                    </option>
+
+                                    <option
+                                        value="En revisión"
+                                        {% if solicitud.estado == "En revisión" %}selected{% endif %}>
+                                        En revisión
+                                    </option>
+
+                                    <option
+                                        value="Cotizada"
+                                        {% if solicitud.estado == "Cotizada" %}selected{% endif %}>
+                                        Cotizada
+                                    </option>
+
+                                    <option
+                                        value="Aceptada"
+                                        {% if solicitud.estado == "Aceptada" %}selected{% endif %}>
+                                        Aceptada
+                                    </option>
+
+                                    <option
+                                        value="En desarrollo"
+                                        {% if solicitud.estado == "En desarrollo" %}selected{% endif %}>
+                                        En desarrollo
+                                    </option>
+
+                                    <option
+                                        value="Finalizada"
+                                        {% if solicitud.estado == "Finalizada" %}selected{% endif %}>
+                                        Finalizada
+                                    </option>
+
+                                </select>
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary w-100">
+                                    Actualizar estado
+                                </button>
+
+                            </form>
+
+                        </div>
 
                     </div>
 
                 </div>
 
 
-                <div class="solicitud-body">
+                <!-- COTIZACIÓN -->
 
-                    <div class="row g-4">
+                <div class="row g-4 mt-1">
 
-                        <!-- CLIENTE -->
+                    <div class="col-12">
 
-                        <div class="col-lg-4">
+                        <div class="cotizacion-panel">
 
-                            <div class="solicitud-columna">
+                            <h6>
+                                Cotización
+                            </h6>
 
-                                <span class="dato-label">
-                                    Cliente
-                                </span>
 
-                                <div class="dato-valor fw-semibold mb-3">
-                                    {{ solicitud.nombre }}
-                                </div>
+                            {% if solicitud.id_cotizacion %}
 
-                                <span class="dato-label">
-                                    Correo
-                                </span>
+                                <div class="row g-4 align-items-start">
 
-                                <div class="dato-valor mb-3">
-                                    {{ solicitud.correo }}
-                                </div>
+                                    <div class="col-md-4">
 
-                                <span class="dato-label">
-                                    Servicio solicitado
-                                </span>
+                                        <span class="dato-label">
+                                            Precio
+                                        </span>
 
-                                <div class="dato-valor fw-semibold mb-3">
-                                    {{ solicitud.servicio }}
-                                </div>
-
-                                <span class="dato-label">
-                                    Producto relacionado
-                                </span>
-
-                                <div class="dato-valor">
-                                    {{ solicitud.producto or "No especificado" }}
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- DESCRIPCIÓN -->
-
-                        <div class="col-lg-4">
-
-                            <div class="solicitud-columna">
-
-                                <span class="dato-label">
-                                    Descripción de la solicitud
-                                </span>
-
-                                <div class="dato-valor">
-                                    {{ solicitud.descripcion }}
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- ESTADO -->
-
-                        <div class="col-lg-4">
-
-                            <div class="estado-panel">
-
-                                <h6>
-                                    Estado de la solicitud
-                                </h6>
-
-                                <form
-                                    method="POST"
-                                    action="{{ url_for(
-                                        'cambiar_estado_solicitud',
-                                        id_solicitud=solicitud.id_solicitud
-                                    ) }}">
-
-                                    <select
-                                        name="estado"
-                                        class="form-select estado-select">
-
-                                        <option
-                                            value="Pendiente"
-                                            {% if solicitud.estado == "Pendiente" %}selected{% endif %}>
-                                            Pendiente
-                                        </option>
-
-                                        <option
-                                            value="En revisión"
-                                            {% if solicitud.estado == "En revisión" %}selected{% endif %}>
-                                            En revisión
-                                        </option>
-
-                                        <option
-                                            value="Cotizada"
-                                            {% if solicitud.estado == "Cotizada" %}selected{% endif %}>
-                                            Cotizada
-                                        </option>
-
-                                        <option
-                                            value="Aceptada"
-                                            {% if solicitud.estado == "Aceptada" %}selected{% endif %}>
-                                            Aceptada
-                                        </option>
-
-                                        <option
-                                            value="En desarrollo"
-                                            {% if solicitud.estado == "En desarrollo" %}selected{% endif %}>
-                                            En desarrollo
-                                        </option>
-
-                                        <option
-                                            value="Finalizada"
-                                            {% if solicitud.estado == "Finalizada" %}selected{% endif %}>
-                                            Finalizada
-                                        </option>
-
-                                    </select>
-
-                                    <button
-                                        type="submit"
-                                        class="btn btn-primary w-100">
-                                        Actualizar estado
-                                    </button>
-
-                                </form>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- COTIZACIÓN -->
-
-                    <div class="row g-4 mt-1">
-
-                        <div class="col-12">
-
-                            <div class="cotizacion-panel">
-
-                                <h6>
-                                    Cotización
-                                </h6>
-
-
-                                {% if solicitud.id_cotizacion %}
-
-                                    <div class="row g-4 align-items-start">
-
-                                        <div class="col-md-4">
-
-                                            <span class="dato-label">
-                                                Precio
-                                            </span>
-
-                                            <div class="fs-4 fw-bold text-success">
-                                                ${{ "%.2f"|format(solicitud.precio_cotizacion) }}
-                                            </div>
-
-                                        </div>
-
-
-                                        <div class="col-md-4">
-
-                                            <span class="dato-label">
-                                                Descripción
-                                            </span>
-
-                                            <div class="dato-valor">
-                                                {{ solicitud.descripcion_cotizacion }}
-                                            </div>
-
-                                        </div>
-
-
-                                        <div class="col-md-4">
-
-                                            <span class="dato-label">
-                                                Estado de la cotización
-                                            </span>
-
-                                            <div class="mb-3">
-
-                                                <span class="badge bg-secondary">
-                                                    {{ solicitud.estado_cotizacion }}
-                                                </span>
-
-                                            </div>
-
-
-                                            <form
-                                                method="POST"
-                                                action="{{ url_for(
-                                                    'cambiar_estado_cotizacion',
-                                                    id_cotizacion=solicitud.id_cotizacion
-                                                ) }}">
-
-                                                <select
-                                                    name="estado"
-                                                    class="form-select estado-select">
-
-                                                    <option
-                                                        value="Pendiente"
-                                                        {% if solicitud.estado_cotizacion == "Pendiente" %}selected{% endif %}>
-                                                        Pendiente
-                                                    </option>
-
-                                                    <option
-                                                        value="Aceptada"
-                                                        {% if solicitud.estado_cotizacion == "Aceptada" %}selected{% endif %}>
-                                                        Aceptada
-                                                    </option>
-
-                                                    <option
-                                                        value="Rechazada"
-                                                        {% if solicitud.estado_cotizacion == "Rechazada" %}selected{% endif %}>
-                                                        Rechazada
-                                                    </option>
-
-                                                </select>
-
-                                                <button
-                                                    type="submit"
-                                                    class="btn btn-secondary w-100">
-                                                    Actualizar cotización
-                                                </button>
-
-                                            </form>
-
-
-{% if solicitud.estado != "Aceptada" %}
-    {% if solicitud.estado != "En desarrollo" %}
-        {% if solicitud.estado != "Finalizada" %}
-            {% if solicitud.estado_cotizacion != "Aceptada" %}
-
-                <form
-                    method="POST"
-                    action="{{ url_for(
-                        'eliminar_solicitud',
-                        id_solicitud=solicitud.id_solicitud
-                    ) }}"
-                    onsubmit="return confirm(
-                        '¿Está seguro de eliminar esta solicitud?'
-                    );"
-                    class="mt-2"
-                >
-
-                    <button
-                        type="submit"
-                        class="btn btn-danger w-100"
-                    >
-                        Eliminar solicitud
-                    </button>
-
-                </form>
-
-            {% endif %}
-        {% endif %}
-    {% endif %}
-{% endif %}
-
+                                        <div class="fs-4 fw-bold text-success">
+                                            ${{ "%.2f"|format(solicitud.precio_cotizacion) }}
                                         </div>
 
                                     </div>
 
 
-                                {% else %}
+                                    <div class="col-md-4">
 
-                                    <div class="row g-4 align-items-start">
+                                        <span class="dato-label">
+                                            Descripción
+                                        </span>
 
-                                        <div class="col-md-4">
+                                        <div class="dato-valor">
+                                            {{ solicitud.descripcion_cotizacion }}
+                                        </div>
 
-                                            <div class="alert alert-light border mb-0">
-                                                Aún no existe una cotización para esta solicitud.
-                                            </div>
+                                    </div>
+
+
+                                    <div class="col-md-4">
+
+                                        <span class="dato-label">
+                                            Estado de la cotización
+                                        </span>
+
+                                        <div class="mb-3">
+
+                                            <span class="badge bg-secondary">
+                                                {{ solicitud.estado_cotizacion }}
+                                            </span>
 
                                         </div>
 
 
-                                        <div class="col-md-8">
+                                        <form
+                                            method="POST"
+                                            action="{{ url_for(
+                                                'cambiar_estado_cotizacion',
+                                                id_cotizacion=solicitud.id_cotizacion
+                                            ) }}">
+
+                                            <select
+                                                name="estado"
+                                                class="form-select estado-select">
+
+                                                <option
+                                                    value="Pendiente"
+                                                    {% if solicitud.estado_cotizacion == "Pendiente" %}selected{% endif %}>
+                                                    Pendiente
+                                                </option>
+
+                                                <option
+                                                    value="Aceptada"
+                                                    {% if solicitud.estado_cotizacion == "Aceptada" %}selected{% endif %}>
+                                                    Aceptada
+                                                </option>
+
+                                                <option
+                                                    value="Rechazada"
+                                                    {% if solicitud.estado_cotizacion == "Rechazada" %}selected{% endif %}>
+                                                    Rechazada
+                                                </option>
+
+                                            </select>
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-secondary w-100">
+                                                Actualizar cotización
+                                            </button>
+
+                                        </form>
+
+
+                                        <!-- CREAR FACTURA -->
+
+                                        {% if solicitud.estado_cotizacion == "Aceptada" %}
+
+                                            <hr>
 
                                             <form
                                                 method="POST"
                                                 action="{{ url_for(
-                                                    'crear_cotizacion',
-                                                    id_solicitud=solicitud.id_solicitud
+                                                    'crear_factura',
+                                                    id_cotizacion=solicitud.id_cotizacion
                                                 ) }}">
 
-                                                <div class="row g-3">
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-success w-100">
+                                                    Crear factura
+                                                </button>
 
-                                                    <div class="col-md-4">
+                                            </form>
 
-                                                        <label class="form-label fw-semibold">
-                                                            Precio
-                                                        </label>
-
-                                                        <input
-                                                            type="number"
-                                                            name="precio"
-                                                            class="form-control"
-                                                            placeholder="Ej. 250.00"
-                                                            step="0.01"
-                                                            min="0"
-                                                            required>
-
-                                                    </div>
+                                        {% endif %}
 
 
-                                                    <div class="col-md-8">
+                                        <!-- ELIMINAR SOLICITUD -->
 
-                                                        <label class="form-label fw-semibold">
-                                                            Descripción de la cotización
-                                                        </label>
+                                        {% if solicitud.estado != "Aceptada"
+                                              and solicitud.estado != "En desarrollo"
+                                              and solicitud.estado != "Finalizada"
+                                              and solicitud.estado_cotizacion != "Aceptada" %}
 
-                                                        <textarea
-                                                            name="descripcion"
-                                                            class="form-control cotizacion-textarea"
-                                                            placeholder="Describa el alcance y condiciones de la cotización."
-                                                            required></textarea>
+                                            <form
+                                                method="POST"
+                                                action="{{ url_for(
+                                                    'eliminar_solicitud',
+                                                    id_solicitud=solicitud.id_solicitud
+                                                ) }}"
+                                                onsubmit="return confirm(
+                                                    '¿Está seguro de eliminar esta solicitud?'
+                                                );"
+                                                class="mt-2">
 
-                                                    </div>
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-danger w-100">
+                                                    Eliminar solicitud
+                                                </button>
+
+                                            </form>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                            {% else %}
+
+                                <div class="row g-4 align-items-start">
+
+                                    <div class="col-md-4">
+
+                                        <div class="alert alert-light border mb-0">
+                                            Aún no existe una cotización para esta solicitud.
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-md-8">
+
+                                        <form
+                                            method="POST"
+                                            action="{{ url_for(
+                                                'crear_cotizacion',
+                                                id_solicitud=solicitud.id_solicitud
+                                            ) }}">
+
+                                            <div class="row g-3">
+
+                                                <div class="col-md-4">
+
+                                                    <label class="form-label fw-semibold">
+                                                        Precio
+                                                    </label>
+
+                                                    <input
+                                                        type="number"
+                                                        name="precio"
+                                                        class="form-control"
+                                                        step="0.01"
+                                                        min="0"
+                                                        required>
 
                                                 </div>
 
 
-                                                <button
-                                                    type="submit"
-                                                    class="btn btn-success mt-3">
-                                                    Crear cotización
-                                                </button>
+                                                <div class="col-md-8">
 
-                                            </form>
+                                                    <label class="form-label fw-semibold">
+                                                        Descripción
+                                                    </label>
 
-                                        </div>
+                                                    <textarea
+                                                        name="descripcion"
+                                                        class="form-control"
+                                                        rows="3"
+                                                        placeholder="Describa el alcance y condiciones de la cotización."
+                                                        required></textarea>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-success mt-3">
+                                                Crear cotización
+                                            </button>
+
+                                        </form>
 
                                     </div>
 
-                                {% endif %}
+                                </div>
 
-                            </div>
+                            {% endif %}
 
                         </div>
 
@@ -684,19 +703,22 @@ Panel principal - TecnoWeb
 
                 </div>
 
-            </article>
-
-            {% endfor %}
-
-        {% else %}
-
-            <div class="alert alert-info mb-0">
-                No existen solicitudes de cotización registradas.
             </div>
 
-        {% endif %}
+        </article>
 
-    </section>
+        {% endfor %}
+
+    {% else %}
+
+        <div class="alert alert-info mb-0">
+            No existen solicitudes de cotización registradas.
+        </div>
+
+    {% endif %}
+
+</section>
+
 
     <!-- ===================================================== -->
     <!-- MENSAJES DE CONTACTO -->
