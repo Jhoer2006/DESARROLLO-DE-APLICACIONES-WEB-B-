@@ -36,6 +36,7 @@ Facturación - TecnoWeb
                     <th>Fecha</th>
                     <th>Total</th>
                     <th>Estado</th>
+                    <th>Acciones</th>
 
                 </tr>
 
@@ -44,53 +45,86 @@ Facturación - TecnoWeb
 
             <tbody>
 
-                {% for factura in facturas %}
+                {% if facturas %}
 
-                <tr>
+                    {% for factura in facturas %}
 
-                    <td>
-                        {{ factura.numero }}
-                    </td>
+                    <tr>
 
-                    <td>
-                        {{ factura.cliente }}
-                    </td>
+                        <td>
+                            {{ factura.numero }}
+                        </td>
 
-                    <td>
-                        {{ factura.servicio }}
-                    </td>
+                        <td>
+                            {{ factura.cliente }}
+                        </td>
 
-                    <td>
-                        {{ factura.fecha.strftime('%d/%m/%Y') }}
-                    </td>
+                        <td>
+                            {{ factura.servicio }}
+                        </td>
 
-                    <td>
-                        <strong>
-                            ${{ "%.2f"|format(factura.total) }}
-                        </strong>
-                    </td>
+                        <td>
+                            {{ factura.fecha.strftime('%d/%m/%Y') }}
+                        </td>
 
-                    <td>
+                        <td>
+                            <strong>
+                                ${{ "%.2f"|format(factura.total|float) }}
+                            </strong>
+                        </td>
 
-                        {% if factura.estado == "Pagada" %}
+                        <td>
 
-                            <span class="badge bg-success px-3 py-2">
-                                Pagada
-                            </span>
+                            {% if factura.estado == "Pagada" %}
 
-                        {% else %}
+                                <span class="badge bg-success px-3 py-2">
+                                    Pagada
+                                </span>
 
-                            <span class="badge bg-warning text-dark px-3 py-2">
-                                Pendiente
-                            </span>
+                            {% elif factura.estado == "Pendiente" %}
 
-                        {% endif %}
+                                <span class="badge bg-warning text-dark px-3 py-2">
+                                    Pendiente
+                                </span>
 
-                    </td>
+                            {% else %}
 
-                </tr>
+                                <span class="badge bg-secondary px-3 py-2">
+                                    {{ factura.estado }}
+                                </span>
 
-                {% endfor %}
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="{{ url_for('descargar_factura_pdf', id_factura=factura.id_factura) }}"
+                                class="btn btn-danger btn-sm"
+                            >
+                                📄 Descargar PDF
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="7" class="text-center">
+
+                            No existen facturas registradas.
+
+                        </td>
+
+                    </tr>
+
+                {% endif %}
 
             </tbody>
 

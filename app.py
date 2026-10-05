@@ -1,4 +1,17 @@
-from flask import Flask, render_template, redirect, url_for, request, flash
+from flask import Flask, render_template, redirect, url_for, request, flash, send_file
+from io import BytesIO
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER, TA_RIGHT
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import mm
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle
+)
 from forms import ProductoForm, ClienteForm, ProveedorForm, FacturacionForm
 from conexion.conexion import obtener_conexion
 from psycopg2.extras import RealDictCursor
@@ -1444,6 +1457,334 @@ def eliminar_proveedor(id_proveedor):
         conexion.close()
 
     return redirect(url_for("proveedores"))
+
+
+# ============================================================
+# DESCARGAR FACTURA EN PDF
+# ============================================================
+
+@app.route("/factura/<int:id_factura>/pdf")
+@login_required
+def descargar_factura_pdf(id_factura):
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor(cursor_factory=RealDictCursor)
+
+    cursor.execute(
+        """
+        SELECT
+            f.id_factura,
+            f.numero,
+            f.servicio,
+            f.fecha,
+            f.total,
+            f.estado,
+            c.nombre AS cliente,
+            c.correo AS correo_cliente,
+            c.telefono AS telefono_cliente,
+            c.cedula AS cedula_cliente,
+            co.id_cotizacion,
+            co.precio AS precio_cotizacion,
+            co.estado AS estado_cotizacion,
+            co.descripcion AS descripcion_cotizacion
+        FROM facturas f
+        LEFT JOIN clientes c
+            ON f.id_cliente = c.id_cliente
+        LEFT JOIN cotizaciones co
+            ON f.id_cotizacion = co.id_cotizacion
+        WHERE f.id_factura = %s
+        """,
+        (id_factura,)
+    )
+
+    factura = cursor.fetchone()
+
+    cursor.close()
+    conexion.close()
+
+    if factura is None:
+        flash("La factura no existe.", "danger")
+        return redirect(url_for("facturacion"))
+
+    # Crear PDF en memoria
+    buffer = BytesIO()
+
+    documento = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=18 * mm,
+        leftMargin=18 * mm,
+        topMargin=18 * mm,
+        bottomMargin=18 * mm
+    )
+
+    estilos = getSampleStyleSheet()
+
+    estilo_empresa = ParagraphStyle(
+        "Empresa",
+        parent=estilos["Title"],
+        fontName="Helvetica-Bold",
+        fontSize=22,
+        leading=26,
+        alignment=TA_CENTER,
+        textColor=colors.HexColor("#198754"),
+        spaceAfter=4
+    )
+
+    estilo_subtitulo = ParagraphStyle(
+        "Subtitulo",
+        parent=estilos["Normal"],
+        fontName="Helvetica",
+        fontSize=10,
+        leading=14,
+        alignment=TA_CENTER,
+        textColor=colors.HexColor("#555555"),
+        spaceAfter=14
+    )
+
+    estilo_titulo = ParagraphStyle(
+        "TituloFactura",
+        parent=estilos["Heading2"],
+        fontName="Helvetica-Bold",
+        fontSize=16,
+        leading=20,
+        alignment=TA_RIGHT,
+        textColor=colors.HexColor("#212529")
+    )
+
+    estilo_normal = ParagraphStyle(
+        "NormalFactura",
+        parent=estilos["Normal"],
+        fontName="Helvetica",
+        fontSize=10,
+        leading=14,
+        textColor=colors.HexColor("#212529")
+    )
+
+    estilo_total = ParagraphStyle(
+        "TotalFactura",
+        parent=estilos["Normal"],
+        fontName="Helvetica-Bold",
+        fontSize=13,
+        leading=16,
+        alignment=TA_RIGHT
+    )
+
+    elementos = []
+
+    # Encabezado
+    elementos.append(Paragraph("TecnoWeb", estilo_empresa))
+    elementos.append(
+        Paragraph(
+            "Desarrollo y Soluciones Web",
+            estilo_subtitulo
+        )
+    )
+
+    encabezado = Table(
+        [
+            [
+                Paragraph(
+                    "<b>FACTURA</b>",
+                    estilo_titulo
+                ),
+                Paragraph(
+                    f"<b>Número:</b> {factura['numero']}<br/>"
+                    f"<b>Fecha:</b> {factura['fecha']}<br/>"
+                    f"<b>Estado:</b> {factura['estado']}",
+                    estilo_normal
+                )
+            ]
+        ],
+        colWidths=[90 * mm, 80 * mm]
+    )
+
+    encabezado.setStyle(
+        TableStyle(
+            [
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("ALIGN", (0, 0), (0, 0), "LEFT"),
+                ("ALIGN", (1, 0), (1, 0), "RIGHT"),
+                ("BOX", (0, 0), (-1, -1), 0.8, colors.HexColor("#198754")),
+                ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8F9FA")),
+                ("LEFTPADDING", (0, 0), (-1, -1), 10),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+                ("TOPPADDING", (0, 0), (-1, -1), 10),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+            ]
+        )
+    )
+
+    elementos.append(encabezado)
+    elementos.append(Spacer(1, 12))
+
+    # Datos del cliente
+    elementos.append(
+        Paragraph(
+            "<b>DATOS DEL CLIENTE</b>",
+            estilo_normal
+        )
+    )
+    elementos.append(Spacer(1, 5))
+
+    datos_cliente = [
+        [
+            Paragraph("<b>Cliente:</b>", estilo_normal),
+            Paragraph(
+                str(factura["cliente"] or "No registrado"),
+                estilo_normal
+            )
+        ],
+        [
+            Paragraph("<b>Correo:</b>", estilo_normal),
+            Paragraph(
+                str(factura["correo_cliente"] or "No registrado"),
+                estilo_normal
+            )
+        ],
+        [
+            Paragraph("<b>Teléfono:</b>", estilo_normal),
+            Paragraph(
+                str(factura["telefono_cliente"] or "No registrado"),
+                estilo_normal
+            )
+        ],
+        [
+            Paragraph("<b>Cédula:</b>", estilo_normal),
+            Paragraph(
+                str(factura["cedula_cliente"] or "No registrado"),
+                estilo_normal
+            )
+        ]
+    ]
+
+    tabla_cliente = Table(
+        datos_cliente,
+        colWidths=[35 * mm, 135 * mm]
+    )
+
+    tabla_cliente.setStyle(
+        TableStyle(
+            [
+                ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#CED4DA")),
+                ("INNERGRID", (0, 0), (-1, -1), 0.3, colors.HexColor("#DEE2E6")),
+                ("BACKGROUND", (0, 0), (0, -1), colors.HexColor("#F8F9FA")),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                ("TOPPADDING", (0, 0), (-1, -1), 7),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+            ]
+        )
+    )
+
+    elementos.append(tabla_cliente)
+    elementos.append(Spacer(1, 14))
+
+    # Detalle de la factura
+    elementos.append(
+        Paragraph(
+            "<b>DETALLE DEL SERVICIO</b>",
+            estilo_normal
+        )
+    )
+    elementos.append(Spacer(1, 5))
+
+    servicio = str(factura["servicio"] or "Servicio")
+    descripcion = str(
+        factura["descripcion_cotizacion"]
+        or "Servicio contratado mediante cotización."
+    )
+
+    detalle = [
+        [
+            Paragraph("<b>Servicio</b>", estilo_normal),
+            Paragraph("<b>Descripción</b>", estilo_normal),
+            Paragraph("<b>Importe</b>", estilo_normal)
+        ],
+        [
+            Paragraph(servicio, estilo_normal),
+            Paragraph(descripcion, estilo_normal),
+            Paragraph(
+                f"${float(factura['total'] or 0):.2f}",
+                estilo_normal
+            )
+        ]
+    ]
+
+    tabla_detalle = Table(
+        detalle,
+        colWidths=[45 * mm, 90 * mm, 35 * mm]
+    )
+
+    tabla_detalle.setStyle(
+        TableStyle(
+            [
+                ("BOX", (0, 0), (-1, -1), 0.6, colors.HexColor("#ADB5BD")),
+                ("INNERGRID", (0, 0), (-1, -1), 0.3, colors.HexColor("#DEE2E6")),
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#198754")),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("ALIGN", (2, 1), (2, 1), "RIGHT"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                ("TOPPADDING", (0, 0), (-1, -1), 8),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+            ]
+        )
+    )
+
+    elementos.append(tabla_detalle)
+    elementos.append(Spacer(1, 12))
+
+    # Total
+    tabla_total = Table(
+        [
+            [
+                Paragraph("<b>TOTAL:</b>", estilo_total),
+                Paragraph(
+                    f"<b>${float(factura['total'] or 0):.2f}</b>",
+                    estilo_total
+                )
+            ]
+        ],
+        colWidths=[135 * mm, 35 * mm]
+    )
+
+    tabla_total.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#E9F7EF")),
+                ("BOX", (0, 0), (-1, -1), 0.8, colors.HexColor("#198754")),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                ("TOPPADDING", (0, 0), (-1, -1), 10),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+            ]
+        )
+    )
+
+    elementos.append(tabla_total)
+    elementos.append(Spacer(1, 25))
+
+    elementos.append(
+        Paragraph(
+            "Gracias por confiar en TecnoWeb.",
+            estilo_subtitulo
+        )
+    )
+
+    documento.build(elementos)
+
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name=f"Factura_{factura['numero']}.pdf",
+        mimetype="application/pdf"
+    )
 
 
 # ============================================================
